@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="#0A0A0F"
+	android:orientation="vertical">
+
+	<androidx.core.widget.NestedScrollView
+		android:id="@+id/mainScrollBar"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:overScrollMode="never"
+		android:scrollbars="none">
+
+		<LinearLayout
+			android:id="@+id/body"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:paddingBottom="100dp">
+
+			<!-- Header Section -->
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center_vertical"
+				android:orientation="horizontal"
+				android:paddingHorizontal="16dp"
+				android:paddingTop="20dp"
+				android:paddingBottom="12dp">
+
+				<LinearLayout
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:orientation="vertical">
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:fontFamily="sans-serif-medium"
+						android:text="Music Vibe"
+						android:textColor="#FFFFFF"
+						android:textSize="24sp"
+						android:textStyle="bold" />
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="2dp"
+						android:fontFamily="sans-serif"
+						android:text="Discover &amp; Stream Your Vibes"
+						android:textColor="#A0A0B0"
+						android:textSize="13sp" />
+				</LinearLayout>
+
+				<ImageView
+					android:layout_width="40dp"
+					android:layout_height="40dp"
+					android:src="@drawable/logo"
+					android:contentDescription="App Logo" />
+			</LinearLayout>
+
+			<!-- Category Filter Chips Bar -->
+			<HorizontalScrollView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:overScrollMode="never"
+				android:paddingHorizontal="12dp"
+				android:paddingVertical="8dp"
+				android:scrollbars="none">
+
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal">
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginEnd="8dp"
+						android:background="@drawable/bg_chip_selected"
+						android:paddingHorizontal="16dp"
+						android:paddingVertical="8dp"
+						android:text="🔥 Trending"
+						android:textColor="#FFFFFF"
+						android:textSize="13sp"
+						android:textStyle="bold" />
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginEnd="8dp"
+						android:background="@drawable/bg_chip_unselected"
+						android:paddingHorizontal="16dp"
+						android:paddingVertical="8dp"
+						android:text="🎵 Hindi"
+						android:textColor="#C0C0D0"
+						android:textSize="13sp" />
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginEnd="8dp"
+						android:background="@drawable/bg_chip_unselected"
+						android:paddingHorizontal="16dp"
+						android:paddingVertical="8dp"
+						android:text="💃 Bhojpuri"
+						android:textColor="#C0C0D0"
+						android:textSize="13sp" />
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginEnd="8dp"
+						android:background="@drawable/bg_chip_unselected"
+						android:paddingHorizontal="16dp"
+						android:paddingVertical="8dp"
+						android:text="⚡ Haryanvi"
+						android:textColor="#C0C0D0"
+						android:textSize="13sp" />
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:background="@drawable/bg_chip_unselected"
+						android:paddingHorizontal="16dp"
+						android:paddingVertical="8dp"
+						android:text="🌟 Top India"
+						android:textColor="#C0C0D0"
+						android:textSize="13sp" />
+				</LinearLayout>
+			</HorizontalScrollView>
+
+			<!-- Section 1: Hindi Songs -->
+			<LinearLayout
+				android:id="@+id/QuickPicksMusicsLayout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="12dp"
+				android:orientation="vertical">
+
+				<LinearLayout
+					android:id="@+id/QuickPicksMusicsLayoutTop"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:gravity="center_vertical"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp"
+					android:paddingVertical="8dp">
+
+					<TextView
+						android:id="@+id/QuickPicksMusicsLayoutTopTitle"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:fontFamily="sans-serif-medium"
+						android:text="Top Hindi Hits 🎶"
+						android:textColor="#FFFFFF"
+						android:textSize="18sp"
+						android:textStyle="bold" />
+				</LinearLayout>
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/QuickPicksMusicsLayoutShimmer"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:clipToPadding="false"
+					android:paddingHorizontal="12dp"
+					tools:listitem="@layout/shimmer" />
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/recyclerview1"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:clipToPadding="false"
+					android:paddingHorizontal="12dp"
+					android:visibility="gone"
+					tools:listitem="@layout/zenlistmusic" />
+			</LinearLayout>
+
+			<!-- Section 2: Bhojpuri Songs -->
+			<LinearLayout
+				android:id="@+id/RecommendedAlbumsLayout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:orientation="vertical">
+
+				<LinearLayout
+					android:id="@+id/RecommendedAlbumsLayoutTop"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:gravity="center_vertical"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp"
+					android:paddingVertical="8dp">
+
+					<TextView
+						android:id="@+id/RecommendedAlbumsLayoutTopTitle"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:fontFamily="sans-serif-medium"
+						android:text="Bhojpuri Hits 🔥"
+						android:textColor="#FFFFFF"
+						android:textSize="18sp"
+						android:textStyle="bold" />
+				</LinearLayout>
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/RecommendedAlbumsLayoutShimmer"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:clipToPadding="false"
+					android:paddingHorizontal="12dp"
+					tools:listitem="@layout/shimmer" />
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/recyclerview2"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:clipToPadding="false"
+					android:paddingHorizontal="12dp"
+					android:visibility="gone"
+					tools:listitem="@layout/zenlistmusic" />
+			</LinearLayout>
+
+			<!-- Section 3: Haryanvi Songs -->
+			<LinearLayout
+				android:id="@+id/MusicVideosLayout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:orientation="vertical">
+
+				<LinearLayout
+					android:id="@+id/MusicVideosLayoutTop"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:gravity="center_vertical"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp"
+					android:paddingVertical="8dp">
+
+					<TextView
+						android:id="@+id/MusicVideosLayoutTopTitle"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:fontFamily="sans-serif-medium"
+						android:text="Haryanvi Beats ⚡"
+						android:textColor="#FFFFFF"
+						android:textSize="18sp"
+						android:textStyle="bold" />
+				</LinearLayout>
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/MusicVideosLayoutShimmer"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:clipToPadding="false"
+					android:paddingHorizontal="12dp"
+					tools:listitem="@layout/shimmer" />
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/recyclerview3"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:clipToPadding="false"
+					android:paddingHorizontal="12dp"
+					android:visibility="gone"
+					tools:listitem="@layout/zenlistmusic" />
+			</LinearLayout>
+
+			<!-- Section 4: Top India Charts -->
+			<LinearLayout
+				android:id="@+id/TopArtistsLayout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:orientation="vertical">
+
+				<LinearLayout
+					android:id="@+id/linear4"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical">
+
+					<LinearLayout
+						android:id="@+id/linear6"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:gravity="center_vertical"
+						android:orientation="horizontal"
+						android:paddingHorizontal="16dp"
+						android:paddingVertical="8dp">
+
+						<TextView
+							android:id="@+id/textview1"
+							android:layout_width="0dp"
+							android:layout_height="wrap_content"
+							android:layout_weight="1"
+							android:fontFamily="sans-serif-medium"
+							android:text="Top India Charts 🌟"
+							android:textColor="#FFFFFF"
+							android:textSize="18sp"
+							android:textStyle="bold" />
+					</LinearLayout>
+
+					<androidx.recyclerview.widget.RecyclerView
+						android:id="@+id/recyclerview4"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:clipToPadding="false"
+						android:paddingHorizontal="12dp"
+						tools:listitem="@layout/shimmer" />
+
+					<androidx.recyclerview.widget.RecyclerView
+						android:id="@+id/recyclerview5"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:clipToPadding="false"
+						android:paddingHorizontal="12dp"
+						tools:listitem="@layout/zenlistmusic" />
+
+					<!-- Clean layout container replacing old banner -->
+					<LinearLayout
+						android:id="@+id/linear7"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:visibility="gone" />
+				</LinearLayout>
+
+				<LinearLayout
+					android:id="@+id/linear5"
+					android:layout_width="match_parent"
+					android:layout_height="20dp"
+					android:orientation="horizontal" />
+			</LinearLayout>
+
+		</LinearLayout>
+	</androidx.core.widget.NestedScrollView>
+</LinearLayout>

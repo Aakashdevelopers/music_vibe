@@ -1,0 +1,69 @@
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+	<LinearLayout
+		android:id="@+id/linear1"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingLeft="12dp"
+		android:paddingTop="8dp"
+		android:paddingRight="16dp"
+		android:paddingBottom="8dp"
+		android:gravity="center_vertical"
+		android:orientation="horizontal">
+		<androidx.cardview.widget.CardView
+			android:id="@+id/mAlbumCard"
+			android:layout_width="60dp"
+			android:layout_height="60dp"
+			android:layout_marginLeft="5dp"
+			android:layout_marginRight="5dp"
+			app:cardBackgroundColor="@android:color/transparent"
+			app:cardElevation="0dp"
+			app:cardCornerRadius="12dp">
+			<LinearLayout
+				android:id="@+id/linear5"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:background="@android:color/transparent"
+				android:orientation="vertical">
+				<ImageView
+					android:id="@+id/ArtZen"
+					android:focusable="false"
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:src="@drawable/default_music_image"
+					android:scaleType="fitCenter" />
+			</LinearLayout>
+		</androidx.cardview.widget.CardView>
+		<LinearLayout
+			android:id="@+id/mMusicInfoMiddle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:padding="8dp"
+			android:orientation="vertical"
+			android:layout_weight="1">
+			<TextView
+				android:id="@+id/TnameZen"
+				android:focusable="false"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Artist Name"
+				android:textSize="14sp"
+				android:textColor="#FFFFFF"
+				android:singleLine="true" />
+			<TextView
+				android:id="@+id/TartistZen"
+				android:focusable="false"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="0 fan"
+				android:textSize="12sp"
+				android:textColor="#757575"
+				android:singleLine="true" />
+		</LinearLayout>
+	</LinearLayout>
+</LinearLayout>

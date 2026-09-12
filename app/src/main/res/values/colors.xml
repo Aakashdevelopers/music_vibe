@@ -1,0 +1,9 @@
+<resources>
+    <color name="colorAccent">#FF5252</color>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#FFFFFF</color>
+    <color name="colorControlHighlight">#9E9E9E</color>
+    <color name="colorControlNormal">#FFFFFF</color>
+    <color name="semi_transparent_white">#80808080</color>
+    <color name="White87">#E0808080</color>
+</resources>

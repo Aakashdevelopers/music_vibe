@@ -1,0 +1,58 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="5dp"
+            android:height="20dp"
+            android:viewportWidth="4"
+            android:viewportHeight="16">
+            
+            <!-- Grupo estático (sin animación) -->
+            <group android:name="static_group">
+                <group
+                    android:name="static_element"
+                    android:translateX="2"
+                    android:translateY="8">
+                    <path
+                        android:name="static_path"
+                        android:fillAlpha="1"
+                        android:fillColor="#999999"
+                        android:fillType="nonZero"
+                        android:pathData="M2 -6 C2,-6 2,6 2,6 C2,7.1 1.1,8 0,8 C0,8 0,8 0,8 C-1.1,8 -2,7.1 -2,6 C-2,6 -2,-6 -2,-6 C-2,-7.1 -1.1,-8 0,-8 C0,-8 0,-8 0,-8 C1.1,-8 2,-7.1 2,-6" />
+                </group>
+            </group>
+
+            <!-- Grupo del progreso (con animación) -->
+            <group android:name="time_group">
+                <group
+                    android:name="progress_element"
+                    android:translateX="2"
+                    android:translateY="8">
+                    <path
+                        android:name="progress_path"
+                        android:fillAlpha="1"
+                        android:fillColor="#ffffff"
+                        android:fillType="nonZero"
+                        android:pathData="M2 -6 C2,-6 2,6 2,6 C2,7.1 1.1,8 0,8 C0,8 0,8 0,8 C-1.1,8 -2,7.1 -2,6 C-2,6 -2,-6 -2,-6 C-2,-7.1 -1.1,-8 0,-8 C0,-8 0,-8 0,-8 C1.1,-8 2,-7.1 2,-6" />
+                </group>
+            </group>
+
+        </vector>
+    </aapt:attr>
+
+    <!-- Animación solo en el progreso -->
+    <target android:name="time_group">
+        <aapt:attr name="android:animation">
+            <set android:ordering="together">
+                <objectAnimator
+                    android:duration="1000"
+                    android:propertyName="translateY"
+                    android:valueFrom="0"
+                    android:valueTo="2"
+                    android:repeatMode="reverse"
+                    android:repeatCount="infinite"
+                    android:valueType="floatType"/>
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>

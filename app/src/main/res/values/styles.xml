@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Transparencia en la barra de estado -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <!-- Transparencia en la barra de navegación -->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <!-- Desactiva la translucidez predeterminada -->
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <!-- Habilita el dibujo detrás de las barras del sistema -->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <!-- Compatibilidad con AppCompat (versiones anteriores a Android 5.0) -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="CustomDialogTheme" parent="Theme.AppCompat.Dialog" />
+</resources>
