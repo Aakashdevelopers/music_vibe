@@ -117,7 +117,9 @@ public class ZenPermissionsActivity extends AppCompatActivity {
 	}
 	
 	private void initializeLogic() {
-		_succes();
+		if (_succes()) {
+			return;
+		}
 		back.setColorFilter(0xFF000000, PorterDuff.Mode.MULTIPLY);
 		
 		
@@ -153,7 +155,7 @@ public class ZenPermissionsActivity extends AppCompatActivity {
 		
 		Ln_Bt_St = findViewById(R.id.Ln_Bt_St);
 		
-		Ln_Bt_St.setOnClickListener(new View.OnClickListener() {
+		Ln_Bt_St.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				_checkStoragePermission();
@@ -233,7 +235,7 @@ public class ZenPermissionsActivity extends AppCompatActivity {
 	}
 	
 	
-	public void _succes() {
+	public boolean _succes() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 			// Android 13 y superior: Verificar si los permisos específicos para medios ya han sido concedidos
 			if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED &&
@@ -243,6 +245,7 @@ public class ZenPermissionsActivity extends AppCompatActivity {
 				startActivity(zgranted);
 				overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 				finish(); // Finaliza la actividad actual después de iniciar la nueva
+				return true;
 			}
 		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			// Android 6.0 (Marshmallow) a Android 12: Verificar si READ_EXTERNAL_STORAGE ya ha sido concedido
@@ -251,6 +254,7 @@ public class ZenPermissionsActivity extends AppCompatActivity {
 				startActivity(zgranted);
 				overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 				finish(); // Finaliza la actividad actual después de iniciar la nueva
+				return true;
 			}
 		} else {
 			// No es necesario verificar permisos en versiones inferiores
@@ -258,7 +262,9 @@ public class ZenPermissionsActivity extends AppCompatActivity {
 			startActivity(zgranted);
 			overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 			finish(); // Finaliza la actividad actual después de iniciar la nueva
+			return true;
 		}
+		return false;
 	}
 	
 	

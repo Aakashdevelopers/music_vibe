@@ -57,7 +57,6 @@ public class ZenmusicFragmentActivity extends Fragment {
 	public View onCreateView(@NonNull LayoutInflater _inflater, @Nullable ViewGroup _container, @Nullable Bundle _savedInstanceState) {
 		View _view = _inflater.inflate(R.layout.zenmusic_fragment, _container, false);
 		initialize(_savedInstanceState, _view);
-		FirebaseApp.initializeApp(getContext());
 		initializeLogic();
 		return _view;
 	}
@@ -65,7 +64,9 @@ public class ZenmusicFragmentActivity extends Fragment {
 	private void initialize(Bundle _savedInstanceState, View _view) {
 		linear7 = _view.findViewById(R.id.linear7);
 		textview3 = _view.findViewById(R.id.textview3);
-		songZEN = getContext().getSharedPreferences("songZEN", Activity.MODE_PRIVATE);
+		if (getContext() != null) {
+			songZEN = getContext().getSharedPreferences("songZEN", Context.MODE_PRIVATE);
+		}
 	}
 	
 	private void initializeLogic() {

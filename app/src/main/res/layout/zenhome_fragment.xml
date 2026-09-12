@@ -4,7 +4,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:background="#0A0A0F"
+	android:background="#000000"
 	android:orientation="vertical">
 
 	<androidx.core.widget.NestedScrollView
@@ -19,9 +19,9 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			android:paddingBottom="100dp">
+			android:paddingBottom="120dp">
 
-			<!-- Header Section -->
+			<!-- Header Section with top padding to clear status bar -->
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
@@ -57,13 +57,13 @@
 				</LinearLayout>
 
 				<ImageView
-					android:layout_width="40dp"
-					android:layout_height="40dp"
-					android:src="@drawable/logo"
-					android:contentDescription="App Logo" />
+					android:layout_width="38dp"
+					android:layout_height="38dp"
+					android:contentDescription="App Logo"
+					android:src="@drawable/logo" />
 			</LinearLayout>
 
-			<!-- Category Filter Chips Bar -->
+			<!-- Glassy Category Filter Chips Bar -->
 			<HorizontalScrollView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
@@ -78,68 +78,158 @@
 					android:orientation="horizontal">
 
 					<TextView
+						android:id="@+id/chip_trending"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_marginEnd="8dp"
-						android:background="@drawable/bg_chip_selected"
+						android:background="@drawable/bg_chip_glassy_selected"
 						android:paddingHorizontal="16dp"
 						android:paddingVertical="8dp"
-						android:text="🔥 Trending"
+						android:text="Trending"
 						android:textColor="#FFFFFF"
 						android:textSize="13sp"
 						android:textStyle="bold" />
 
 					<TextView
+						android:id="@+id/chip_energise"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_marginEnd="8dp"
-						android:background="@drawable/bg_chip_unselected"
+						android:background="@drawable/bg_chip_glassy_unselected"
 						android:paddingHorizontal="16dp"
 						android:paddingVertical="8dp"
-						android:text="🎵 Hindi"
-						android:textColor="#C0C0D0"
+						android:text="Energise"
+						android:textColor="#E0E0F0"
 						android:textSize="13sp" />
 
 					<TextView
+						android:id="@+id/chip_feel_good"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_marginEnd="8dp"
-						android:background="@drawable/bg_chip_unselected"
+						android:background="@drawable/bg_chip_glassy_unselected"
 						android:paddingHorizontal="16dp"
 						android:paddingVertical="8dp"
-						android:text="💃 Bhojpuri"
-						android:textColor="#C0C0D0"
+						android:text="Feel good"
+						android:textColor="#E0E0F0"
 						android:textSize="13sp" />
 
 					<TextView
+						android:id="@+id/chip_relax"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_marginEnd="8dp"
-						android:background="@drawable/bg_chip_unselected"
+						android:background="@drawable/bg_chip_glassy_unselected"
 						android:paddingHorizontal="16dp"
 						android:paddingVertical="8dp"
-						android:text="⚡ Haryanvi"
-						android:textColor="#C0C0D0"
+						android:text="Relax"
+						android:textColor="#E0E0F0"
 						android:textSize="13sp" />
 
 					<TextView
+						android:id="@+id/chip_podcasts"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:background="@drawable/bg_chip_unselected"
+						android:layout_marginEnd="8dp"
+						android:background="@drawable/bg_chip_glassy_unselected"
 						android:paddingHorizontal="16dp"
 						android:paddingVertical="8dp"
-						android:text="🌟 Top India"
-						android:textColor="#C0C0D0"
+						android:text="Podcasts"
+						android:textColor="#E0E0F0"
+						android:textSize="13sp" />
+
+					<TextView
+						android:id="@+id/chip_hindi"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginEnd="8dp"
+						android:background="@drawable/bg_chip_glassy_unselected"
+						android:paddingHorizontal="16dp"
+						android:paddingVertical="8dp"
+						android:text="Hindi"
+						android:textColor="#E0E0F0"
+						android:textSize="13sp" />
+
+					<TextView
+						android:id="@+id/chip_bhojpuri"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginEnd="8dp"
+						android:background="@drawable/bg_chip_glassy_unselected"
+						android:paddingHorizontal="16dp"
+						android:paddingVertical="8dp"
+						android:text="Bhojpuri"
+						android:textColor="#E0E0F0"
+						android:textSize="13sp" />
+
+					<TextView
+						android:id="@+id/chip_haryanvi"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:background="@drawable/bg_chip_glassy_unselected"
+						android:paddingHorizontal="16dp"
+						android:paddingVertical="8dp"
+						android:text="Haryanvi"
+						android:textColor="#E0E0F0"
 						android:textSize="13sp" />
 				</LinearLayout>
 			</HorizontalScrollView>
+
+			<!-- Quick Picks Section -->
+			<LinearLayout
+				android:id="@+id/QuickPicksSection"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="12dp"
+				android:orientation="vertical">
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:gravity="center_vertical"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp"
+					android:paddingVertical="8dp">
+
+					<TextView
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:fontFamily="sans-serif-medium"
+						android:text="Quick picks"
+						android:textColor="#FFFFFF"
+						android:textSize="20sp"
+						android:textStyle="bold" />
+				</LinearLayout>
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/QuickPicksShimmer"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:clipToPadding="false"
+					android:paddingHorizontal="12dp"
+					app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+					app:spanCount="2"
+					tools:listitem="@layout/shimmer_quick_pick" />
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/recyclerviewQuickPicks"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:clipToPadding="false"
+					android:paddingHorizontal="12dp"
+					android:visibility="gone"
+					app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+					app:spanCount="2"
+					tools:listitem="@layout/item_quick_pick" />
+			</LinearLayout>
 
 			<!-- Section 1: Hindi Songs -->
 			<LinearLayout
 				android:id="@+id/QuickPicksMusicsLayout"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="12dp"
+				android:layout_marginTop="16dp"
 				android:orientation="vertical">
 
 				<LinearLayout
@@ -157,18 +247,20 @@
 						android:layout_height="wrap_content"
 						android:layout_weight="1"
 						android:fontFamily="sans-serif-medium"
-						android:text="Top Hindi Hits 🎶"
+						android:text="Top Hindi Hits"
 						android:textColor="#FFFFFF"
 						android:textSize="18sp"
 						android:textStyle="bold" />
 				</LinearLayout>
 
 				<androidx.recyclerview.widget.RecyclerView
-					android:id="@+id/QuickPicksMusicsLayoutShimmer"
+					android:id="@+id/HindiSongsShimmer"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:clipToPadding="false"
-					android:paddingHorizontal="12dp"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp"
+					app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 					tools:listitem="@layout/shimmer" />
 
 				<androidx.recyclerview.widget.RecyclerView
@@ -176,8 +268,10 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:clipToPadding="false"
-					android:paddingHorizontal="12dp"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp"
 					android:visibility="gone"
+					app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 					tools:listitem="@layout/zenlistmusic" />
 			</LinearLayout>
 
@@ -204,7 +298,7 @@
 						android:layout_height="wrap_content"
 						android:layout_weight="1"
 						android:fontFamily="sans-serif-medium"
-						android:text="Bhojpuri Hits 🔥"
+						android:text="Bhojpuri Hits"
 						android:textColor="#FFFFFF"
 						android:textSize="18sp"
 						android:textStyle="bold" />
@@ -215,7 +309,9 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:clipToPadding="false"
-					android:paddingHorizontal="12dp"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp"
+					app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 					tools:listitem="@layout/shimmer" />
 
 				<androidx.recyclerview.widget.RecyclerView
@@ -223,8 +319,10 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:clipToPadding="false"
-					android:paddingHorizontal="12dp"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp"
 					android:visibility="gone"
+					app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 					tools:listitem="@layout/zenlistmusic" />
 			</LinearLayout>
 
@@ -251,7 +349,7 @@
 						android:layout_height="wrap_content"
 						android:layout_weight="1"
 						android:fontFamily="sans-serif-medium"
-						android:text="Haryanvi Beats ⚡"
+						android:text="Haryanvi Beats"
 						android:textColor="#FFFFFF"
 						android:textSize="18sp"
 						android:textStyle="bold" />
@@ -262,7 +360,9 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:clipToPadding="false"
-					android:paddingHorizontal="12dp"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp"
+					app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 					tools:listitem="@layout/shimmer" />
 
 				<androidx.recyclerview.widget.RecyclerView
@@ -270,8 +370,10 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:clipToPadding="false"
-					android:paddingHorizontal="12dp"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp"
 					android:visibility="gone"
+					app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 					tools:listitem="@layout/zenlistmusic" />
 			</LinearLayout>
 
@@ -304,7 +406,7 @@
 							android:layout_height="wrap_content"
 							android:layout_weight="1"
 							android:fontFamily="sans-serif-medium"
-							android:text="Top India Charts 🌟"
+							android:text="Top India Charts"
 							android:textColor="#FFFFFF"
 							android:textSize="18sp"
 							android:textStyle="bold" />
@@ -315,7 +417,9 @@
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:clipToPadding="false"
-						android:paddingHorizontal="12dp"
+						android:orientation="horizontal"
+						android:paddingHorizontal="16dp"
+						app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 						tools:listitem="@layout/shimmer" />
 
 					<androidx.recyclerview.widget.RecyclerView
@@ -323,10 +427,11 @@
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:clipToPadding="false"
-						android:paddingHorizontal="12dp"
+						android:orientation="horizontal"
+						android:paddingHorizontal="16dp"
+						app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 						tools:listitem="@layout/zenlistmusic" />
 
-					<!-- Clean layout container replacing old banner -->
 					<LinearLayout
 						android:id="@+id/linear7"
 						android:layout_width="match_parent"

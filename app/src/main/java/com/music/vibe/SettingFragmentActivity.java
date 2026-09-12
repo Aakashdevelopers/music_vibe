@@ -42,7 +42,6 @@ public class SettingFragmentActivity extends Fragment {
 	public View onCreateView(@NonNull LayoutInflater _inflater, @Nullable ViewGroup _container, @Nullable Bundle _savedInstanceState) {
 		View _view = _inflater.inflate(R.layout.setting_fragment, _container, false);
 		initialize(_savedInstanceState, _view);
-		FirebaseApp.initializeApp(getContext());
 		initializeLogic();
 		return _view;
 	}

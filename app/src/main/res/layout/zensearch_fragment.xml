@@ -1,60 +1,138 @@
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	android:background="#000000"
 	android:orientation="vertical">
+
+	<!-- Top Search Container -->
 	<LinearLayout
 		android:id="@+id/linear6"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:paddingTop="10dp"
-		android:orientation="horizontal">
+		android:orientation="horizontal"
+		android:paddingHorizontal="16dp"
+		android:paddingTop="36dp"
+		android:paddingBottom="12dp">
+
 		<LinearLayout
 			android:id="@+id/Ln_search"
-			android:layout_width="wrap_content"
-			android:layout_height="50dp"
-			android:paddingLeft="16dp"
-			android:paddingRight="16dp"
-			android:background="#FFFFFF"
-			android:gravity="center_horizontal|center_vertical"
+			android:layout_width="match_parent"
+			android:layout_height="48dp"
+			android:background="@drawable/bg_chip_glassy_unselected"
+			android:gravity="center_vertical"
 			android:orientation="horizontal"
-			android:layout_weight="1">
+			android:paddingHorizontal="16dp">
+
 			<ImageView
 				android:id="@+id/imageview1"
-				android:layout_width="30dp"
-				android:layout_height="30dp"
+				android:layout_width="22dp"
+				android:layout_height="22dp"
+				android:contentDescription="Search Icon"
 				android:src="@drawable/icon_search_round"
-				android:scaleType="centerCrop" />
+				app:tint="#A0A0B0" />
+
 			<EditText
 				android:id="@+id/edittext1"
-				android:layout_width="match_parent"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:padding="8dp"
+				android:layout_weight="1"
 				android:background="@android:color/transparent"
-				android:textSize="14sp"
-				android:textColor="#757575"
-				android:hint="Search Songs "
-				android:textColorHint="#BDBDBD" />
+				android:hint="Search Songs, Artists, Albums"
+				android:imeOptions="actionSearch"
+				android:inputType="text"
+				android:paddingHorizontal="12dp"
+				android:textColor="#FFFFFF"
+				android:textColorHint="#808090"
+				android:textSize="14sp" />
+
+			<ImageView
+				android:id="@+id/clear_btn"
+				android:layout_width="22dp"
+				android:layout_height="22dp"
+				android:background="?android:attr/selectableItemBackgroundBorderless"
+				android:clickable="true"
+				android:contentDescription="Clear search"
+				android:focusable="true"
+				android:src="@drawable/icon_cancel_round"
+				android:visibility="gone"
+				app:tint="#A0A0B0" />
 		</LinearLayout>
 	</LinearLayout>
+
+	<!-- Main Content Area -->
 	<LinearLayout
 		android:id="@+id/linear7"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:orientation="vertical">
-		<com.startapp.sdk.ads.banner.Banner
+		android:orientation="vertical"
+		android:paddingBottom="120dp">
+
+		<LinearLayout
 			android:id="@+id/linear8"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:padding="8dp"
-			android:orientation="horizontal" />
+			android:orientation="horizontal"
+			android:visibility="gone" />
+
+		<!-- Search Loading Shimmer -->
+		<androidx.recyclerview.widget.RecyclerView
+			android:id="@+id/searchShimmer"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:clipToPadding="false"
+			android:paddingTop="8dp"
+			android:visibility="gone"
+			tools:listitem="@layout/shimmer_search" />
+
+		<!-- Search Results List -->
 		<androidx.recyclerview.widget.RecyclerView
 			android:id="@+id/recyclerview1"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:layout_marginTop="5dp"
+			android:clipToPadding="false"
+			android:paddingTop="8dp"
+			android:visibility="gone"
 			tools:listitem="@layout/search" />
+
+		<!-- Empty Search State -->
+		<LinearLayout
+			android:id="@+id/emptySearchState"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:gravity="center"
+			android:orientation="vertical"
+			android:padding="32dp"
+			android:visibility="visible">
+
+			<ImageView
+				android:layout_width="72dp"
+				android:layout_height="72dp"
+				android:contentDescription="Search Music"
+				android:src="@drawable/icon_search_roundy"
+				app:tint="#35354A" />
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:fontFamily="sans-serif-medium"
+				android:text="Search Music Vibe"
+				android:textColor="#FFFFFF"
+				android:textSize="18sp"
+				android:textStyle="bold" />
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="6dp"
+				android:fontFamily="sans-serif"
+				android:gravity="center"
+				android:text="Find your favorite tracks, artists, and albums instantly."
+				android:textColor="#808098"
+				android:textSize="13sp" />
+		</LinearLayout>
 	</LinearLayout>
 </LinearLayout>

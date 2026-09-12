@@ -1,94 +1,55 @@
 package com.music.vibe;
 
-import android.animation.*;
-import android.app.*;
 import android.app.Activity;
-import android.content.*;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.*;
-import android.graphics.*;
-import android.graphics.drawable.*;
-import android.media.*;
-import android.net.*;
-import android.os.*;
-import android.text.*;
-import android.text.style.*;
-import android.util.*;
-import android.view.*;
-import android.view.View.*;
-import android.view.animation.*;
-import android.webkit.*;
-import android.widget.*;
+import android.graphics.Bitmap;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import androidx.annotation.*;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.*;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.media.app.*;
-import androidx.palette.graphics.Palette;
-import androidx.recyclerview.widget.*;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
-import androidx.recyclerview.widget.RecyclerView.ViewHolder;
-import com.facebook.shimmer.*;
-import com.google.firebase.FirebaseApp;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Callback;
-import com.theophrast.ui.widget.*;
-import java.io.*;
-import java.text.*;
-import java.util.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.regex.*;
-import jp.wasabeef.picasso.transformations.*;
-import org.json.*;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import java.util.Collections;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import android.content.SharedPreferences;
-import java.lang.reflect.Type;
-import androidx.core.widget.NestedScrollView;
-import com.startapp.sdk.adsbase.adlisteners.*;
-import com.startapp.sdk.adsbase.*;
-import com.startapp.sdk.ads.banner.*;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.firebase.FirebaseApp;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 public class ZenhomeFragmentActivity extends Fragment {
-	
-	private Timer _timer = new Timer();
-	
-	private String API = "";
-	private String table = "";
-	private String URL = "";
-	private String list_json = "";
-	private HashMap<String, Object> map = new HashMap<>();
-	private HashMap<String, Object> map1 = new HashMap<>();
-	private HashMap<String, Object> map2 = new HashMap<>();
-	private HashMap<String, Object> map3 = new HashMap<>();
-	private HashMap<String, Object> map4 = new HashMap<>();
-	
-	private ArrayList<HashMap<String, Object>> QuickPicks = new ArrayList<>();
-	private ArrayList<HashMap<String, Object>> last = new ArrayList<>();
-	private ArrayList<HashMap<String, Object>> my = new ArrayList<>();
-	private ArrayList<HashMap<String, Object>> background_list = new ArrayList<>();
+
 	private ArrayList<HashMap<String, Object>> stori = new ArrayList<>();
+	private ArrayList<HashMap<String, Object>> chipSongs = new ArrayList<>();
 	private ArrayList<HashMap<String, Object>> y = new ArrayList<>();
 	private ArrayList<HashMap<String, Object>> ins = new ArrayList<>();
-	private ArrayList<HashMap<String, Object>> ShimmerListMap = new ArrayList<>();
 	private ArrayList<HashMap<String, Object>> nso = new ArrayList<>();
-	
+	private ArrayList<HashMap<String, Object>> ShimmerListMap = new ArrayList<>();
+
 	private NestedScrollView mainScrollBar;
 	private LinearLayout body;
 	private LinearLayout QuickPicksMusicsLayout;
@@ -97,6 +58,8 @@ public class ZenhomeFragmentActivity extends Fragment {
 	private LinearLayout TopArtistsLayout;
 	private LinearLayout QuickPicksMusicsLayoutTop;
 	private RecyclerView QuickPicksMusicsLayoutShimmer;
+	private RecyclerView QuickPicksShimmer;
+	private RecyclerView recyclerviewQuickPicks;
 	private RecyclerView recyclerview1;
 	private TextView QuickPicksMusicsLayoutTopTitle;
 	private LinearLayout RecommendedAlbumsLayoutTop;
@@ -112,37 +75,40 @@ public class ZenhomeFragmentActivity extends Fragment {
 	private LinearLayout linear6;
 	private RecyclerView recyclerview4;
 	private RecyclerView recyclerview5;
-	private Banner linear7;
+	private LinearLayout linear7;
 	private TextView textview1;
-	
-	private SharedPreferences songZen;
-	private SharedPreferences songZenHome;
-	private SharedPreferences prefs;
-	private SharedPreferences sharedPreferences;
-	private TimerTask t;
-	private SharedPreferences str;
+
+	private TextView chipTrending;
+	private TextView chipEnergise;
+	private TextView chipFeelGood;
+	private TextView chipRelax;
+	private TextView chipPodcasts;
+	private TextView chipHindi;
+	private TextView chipBhojpuri;
+	private TextView chipHaryanvi;
+	private List<TextView> chipList = new ArrayList<>();
+
 	private RequestNetwork storys;
 	private RequestNetwork.RequestListener _storys_request_listener;
+	private RequestNetwork chipRequest;
+	private RequestNetwork.RequestListener _chip_request_listener;
 	private RequestNetwork ts;
 	private RequestNetwork.RequestListener _ts_request_listener;
-	private SharedPreferences songZenNext;
-	private SharedPreferences songZenSearch;
 	private RequestNetwork instaviral;
 	private RequestNetwork.RequestListener _instaviral_request_listener;
 	private RequestNetwork ns;
 	private RequestNetwork.RequestListener _ns_request_listener;
-	private SharedPreferences sp;
-	
+
 	@NonNull
 	@Override
 	public View onCreateView(@NonNull LayoutInflater _inflater, @Nullable ViewGroup _container, @Nullable Bundle _savedInstanceState) {
 		View _view = _inflater.inflate(R.layout.zenhome_fragment, _container, false);
-		initialize(_savedInstanceState, _view);
-		FirebaseApp.initializeApp(getContext());
-		initializeLogic();
-		return _view;
+
+			initialize(_savedInstanceState, _view);
+			initializeLogic();
+			return _view;
 	}
-	
+
 	private void initialize(Bundle _savedInstanceState, View _view) {
 		mainScrollBar = _view.findViewById(R.id.mainScrollBar);
 		body = _view.findViewById(R.id.body);
@@ -151,7 +117,9 @@ public class ZenhomeFragmentActivity extends Fragment {
 		MusicVideosLayout = _view.findViewById(R.id.MusicVideosLayout);
 		TopArtistsLayout = _view.findViewById(R.id.TopArtistsLayout);
 		QuickPicksMusicsLayoutTop = _view.findViewById(R.id.QuickPicksMusicsLayoutTop);
-		QuickPicksMusicsLayoutShimmer = _view.findViewById(R.id.QuickPicksMusicsLayoutShimmer);
+		QuickPicksMusicsLayoutShimmer = _view.findViewById(R.id.HindiSongsShimmer);
+		QuickPicksShimmer = _view.findViewById(R.id.QuickPicksShimmer);
+		recyclerviewQuickPicks = _view.findViewById(R.id.recyclerviewQuickPicks);
 		recyclerview1 = _view.findViewById(R.id.recyclerview1);
 		QuickPicksMusicsLayoutTopTitle = _view.findViewById(R.id.QuickPicksMusicsLayoutTopTitle);
 		RecommendedAlbumsLayoutTop = _view.findViewById(R.id.RecommendedAlbumsLayoutTop);
@@ -169,1369 +137,1097 @@ public class ZenhomeFragmentActivity extends Fragment {
 		recyclerview5 = _view.findViewById(R.id.recyclerview5);
 		linear7 = _view.findViewById(R.id.linear7);
 		textview1 = _view.findViewById(R.id.textview1);
-		songZen = getContext().getSharedPreferences("songZen", Activity.MODE_PRIVATE);
-		songZenHome = getContext().getSharedPreferences("songZenHome", Activity.MODE_PRIVATE);
-		prefs = getContext().getSharedPreferences("prefs", Activity.MODE_PRIVATE);
-		sharedPreferences = getContext().getSharedPreferences("recent_songs", Activity.MODE_PRIVATE);
-		str = getContext().getSharedPreferences("story", Activity.MODE_PRIVATE);
-		storys = new RequestNetwork((Activity) getContext());
-		ts = new RequestNetwork((Activity) getContext());
-		songZenNext = getContext().getSharedPreferences("songZenNext", Activity.MODE_PRIVATE);
-		songZenSearch = getContext().getSharedPreferences("songZenSearch", Activity.MODE_PRIVATE);
-		instaviral = new RequestNetwork((Activity) getContext());
-		ns = new RequestNetwork((Activity) getContext());
-		sp = getContext().getSharedPreferences("sp", Activity.MODE_PRIVATE);
-		
+
+		chipTrending = _view.findViewById(R.id.chip_trending);
+		chipEnergise = _view.findViewById(R.id.chip_energise);
+		chipFeelGood = _view.findViewById(R.id.chip_feel_good);
+		chipRelax = _view.findViewById(R.id.chip_relax);
+		chipPodcasts = _view.findViewById(R.id.chip_podcasts);
+		chipHindi = _view.findViewById(R.id.chip_hindi);
+		chipBhojpuri = _view.findViewById(R.id.chip_bhojpuri);
+		chipHaryanvi = _view.findViewById(R.id.chip_haryanvi);
+
+		chipList.clear();
+		if (chipTrending != null) chipList.add(chipTrending);
+		if (chipEnergise != null) chipList.add(chipEnergise);
+		if (chipFeelGood != null) chipList.add(chipFeelGood);
+		if (chipRelax != null) chipList.add(chipRelax);
+		if (chipPodcasts != null) chipList.add(chipPodcasts);
+		if (chipHindi != null) chipList.add(chipHindi);
+		if (chipBhojpuri != null) chipList.add(chipBhojpuri);
+		if (chipHaryanvi != null) chipList.add(chipHaryanvi);
+
+		setupChipClickListeners();
+
+		storys = new RequestNetwork(getActivity());
+		chipRequest = new RequestNetwork(getActivity());
+		ts = new RequestNetwork(getActivity());
+		instaviral = new RequestNetwork(getActivity());
+		ns = new RequestNetwork(getActivity());
+
+
 		_storys_request_listener = new RequestNetwork.RequestListener() {
 			@Override
 			public void onResponse(String _param1, String _param2, HashMap<String, Object> _param3) {
-				final String _tag = _param1;
-				final String _response = _param2;
-				final HashMap<String, Object> _responseHeaders = _param3;
+				if (!isAdded() || getContext() == null) return;
 				try {
-					
-					JSONObject main = new JSONObject(_response);
-					
+					JSONObject main = new JSONObject(_param2);
 					JSONArray results = main.getJSONArray("results");
-					
 					stori.clear();
-					
+
 					for (int i = 0; i < results.length(); i++) {
-						
 						HashMap<String, Object> map1 = new HashMap<>();
-						
 						JSONObject item = results.getJSONObject(i);
-						
 						String title = item.optString("name", "Unknown");
-						
-						
-						// ARTIST
+
 						String artist = "Unknown";
-						
 						JSONObject artistsObj = item.optJSONObject("artists");
-						
 						if (artistsObj != null) {
-							
 							JSONArray primary = artistsObj.optJSONArray("primary");
-							
 							if (primary != null && primary.length() > 0) {
-								
 								JSONObject artistObj = primary.getJSONObject(0);
-								
 								artist = artistObj.optString("name", "Unknown");
-								
 							}
-							
 						}
-						
-						
-						// IMAGE
+
 						String imageurl = "";
-						
 						JSONArray imageArray = item.optJSONArray("image");
-						
 						if (imageArray != null && imageArray.length() > 2) {
-							
 							JSONObject imageObj = imageArray.getJSONObject(2);
-							
 							imageurl = imageObj.optString("url", "");
-							
 						}
-						
-						
-						// AUDIO URL
+
 						String songurl = "";
-						
 						JSONArray downloadArray = item.optJSONArray("downloadUrl");
-						
 						if (downloadArray != null && downloadArray.length() > 4) {
-							
 							JSONObject audioObj = downloadArray.getJSONObject(4);
-							
 							songurl = audioObj.optString("url", "");
-							
 						}
-						
-						
-						// SKIP EMPTY SONGS
+
 						if (songurl.equals("")) continue;
-						
-						
+
 						map1.put("name", title);
 						map1.put("artist", artist);
 						map1.put("photopath", imageurl);
 						map1.put("data", songurl);
-						
+
 						stori.add(map1);
-						
 					}
-					
-					
 				} catch (Exception e) {
-					
+					Log.e("Zenhome", "Error parsing storys response", e);
 				}
+
+				Context ctx = getContext();
+				if (ctx == null) return;
 				recyclerview1.setAdapter(new Recyclerview1Adapter(stori));
-				recyclerview1.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false));
+				recyclerview1.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
 				QuickPicksMusicsLayoutShimmer.setVisibility(View.GONE);
 				recyclerview1.setVisibility(View.VISIBLE);
-				MusicManager manager = MusicManager.getInstance(requireContext());
-				
-				manager.addSongs(stori);   // ✅ correct
+
+				if (QuickPicksShimmer != null) QuickPicksShimmer.setVisibility(View.GONE);
+				if (recyclerviewQuickPicks != null) {
+					recyclerviewQuickPicks.setAdapter(new QuickPicksAdapter(stori));
+					recyclerviewQuickPicks.setLayoutManager(new GridLayoutManager(ctx, 2));
+					recyclerviewQuickPicks.setNestedScrollingEnabled(false);
+					recyclerviewQuickPicks.setVisibility(View.VISIBLE);
+				}
+
+				MusicManager manager = MusicManager.getInstance(ctx);
+				manager.addSongs(stori);
 			}
-			
+
 			@Override
 			public void onErrorResponse(String _param1, String _param2) {
-				final String _tag = _param1;
-				final String _message = _param2;
-				
+				if (!isAdded() || getContext() == null) return;
+				QuickPicksMusicsLayoutShimmer.setVisibility(View.GONE);
 			}
 		};
-		
+
+		_chip_request_listener = new RequestNetwork.RequestListener() {
+			@Override
+			public void onResponse(String _param1, String _param2, HashMap<String, Object> _param3) {
+				if (!isAdded() || getContext() == null) return;
+				try {
+					JSONObject main = new JSONObject(_param2);
+					JSONArray results = main.getJSONArray("results");
+					chipSongs.clear();
+
+					for (int i = 0; i < results.length(); i++) {
+						HashMap<String, Object> map1 = new HashMap<>();
+						JSONObject item = results.getJSONObject(i);
+						String title = item.optString("name", "Unknown");
+
+						String artist = "Unknown";
+						JSONObject artistsObj = item.optJSONObject("artists");
+						if (artistsObj != null) {
+							JSONArray primary = artistsObj.optJSONArray("primary");
+							if (primary != null && primary.length() > 0) {
+								JSONObject artistObj = primary.getJSONObject(0);
+								artist = artistObj.optString("name", "Unknown");
+							}
+						}
+
+						String imageurl = "";
+						JSONArray imageArray = item.optJSONArray("image");
+						if (imageArray != null && imageArray.length() > 2) {
+							JSONObject imageObj = imageArray.getJSONObject(2);
+							imageurl = imageObj.optString("url", "");
+						}
+
+						String songurl = "";
+						JSONArray downloadArray = item.optJSONArray("downloadUrl");
+						if (downloadArray != null && downloadArray.length() > 4) {
+							JSONObject audioObj = downloadArray.getJSONObject(4);
+							songurl = audioObj.optString("url", "");
+						}
+
+						if (songurl.equals("")) continue;
+
+						map1.put("name", title);
+						map1.put("artist", artist);
+						map1.put("photopath", imageurl);
+						map1.put("data", songurl);
+
+						chipSongs.add(map1);
+					}
+				} catch (Exception e) {
+					Log.e("Zenhome", "Error parsing chip response", e);
+				}
+
+				Context ctx = getContext();
+				if (ctx == null) return;
+
+				if (QuickPicksShimmer != null) QuickPicksShimmer.setVisibility(View.GONE);
+				if (recyclerviewQuickPicks != null) {
+					recyclerviewQuickPicks.setAdapter(new QuickPicksAdapter(chipSongs));
+					recyclerviewQuickPicks.setLayoutManager(new GridLayoutManager(ctx, 2));
+					recyclerviewQuickPicks.setNestedScrollingEnabled(false);
+					recyclerviewQuickPicks.setVisibility(View.VISIBLE);
+				}
+
+				MusicManager manager = MusicManager.getInstance(ctx);
+				manager.addSongs(chipSongs);
+			}
+
+			@Override
+			public void onErrorResponse(String _param1, String _param2) {
+				if (!isAdded() || getContext() == null) return;
+				if (QuickPicksShimmer != null) QuickPicksShimmer.setVisibility(View.GONE);
+			}
+		};
+
 		_ts_request_listener = new RequestNetwork.RequestListener() {
 			@Override
 			public void onResponse(String _param1, String _param2, HashMap<String, Object> _param3) {
-				final String _tag = _param1;
-				final String _response = _param2;
-				final HashMap<String, Object> _responseHeaders = _param3;
+				if (!isAdded() || getContext() == null) return;
 				try {
-					
-					JSONObject main = new JSONObject(_response);
-					
+					JSONObject main = new JSONObject(_param2);
 					JSONArray results = main.getJSONArray("results");
-					
 					y.clear();
-					
+
 					for (int i = 0; i < results.length(); i++) {
-						
 						HashMap<String, Object> map2 = new HashMap<>();
-						
 						JSONObject item = results.getJSONObject(i);
-						
 						String title = item.optString("name", "Unknown");
-						
-						
-						// ARTIST
+
 						String artist = "Unknown";
-						
 						JSONObject artistsObj = item.optJSONObject("artists");
-						
 						if (artistsObj != null) {
-							
 							JSONArray primary = artistsObj.optJSONArray("primary");
-							
 							if (primary != null && primary.length() > 0) {
-								
 								JSONObject artistObj = primary.getJSONObject(0);
-								
 								artist = artistObj.optString("name", "Unknown");
-								
 							}
-							
 						}
-						
-						
-						// IMAGE
+
 						String imageurl = "";
-						
 						JSONArray imageArray = item.optJSONArray("image");
-						
 						if (imageArray != null && imageArray.length() > 2) {
-							
 							JSONObject imageObj = imageArray.getJSONObject(2);
-							
 							imageurl = imageObj.optString("url", "");
-							
 						}
-						
-						
-						// AUDIO URL
+
 						String songurl = "";
-						
 						JSONArray downloadArray = item.optJSONArray("downloadUrl");
-						
 						if (downloadArray != null && downloadArray.length() > 4) {
-							
 							JSONObject audioObj = downloadArray.getJSONObject(4);
-							
 							songurl = audioObj.optString("url", "");
-							
 						}
-						
-						
-						// SKIP EMPTY SONGS
+
 						if (songurl.equals("")) continue;
-						
-						
+
 						map2.put("name", title);
 						map2.put("artist", artist);
 						map2.put("photopath", imageurl);
 						map2.put("data", songurl);
-						
+
 						y.add(map2);
-						
 					}
-					
-					
-					
 				} catch (Exception e) {
-					
-					
-					
+					Log.e("Zenhome", "Error parsing ts response", e);
 				}
+
+				Context ctx = getContext();
+				if (ctx == null) return;
 				Collections.shuffle(y);
 				recyclerview2.setAdapter(new Recyclerview2Adapter(y));
-				recyclerview2.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false));
+				recyclerview2.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
 				RecommendedAlbumsLayoutShimmer.setVisibility(View.GONE);
 				recyclerview2.setVisibility(View.VISIBLE);
-				MusicManager manager = MusicManager.getInstance(requireContext());
-				
-				manager.addSongs(y);   // ✅ correct
+
+				MusicManager manager = MusicManager.getInstance(ctx);
+				manager.addSongs(y);
 			}
-			
+
 			@Override
 			public void onErrorResponse(String _param1, String _param2) {
-				final String _tag = _param1;
-				final String _message = _param2;
-				
+				if (!isAdded() || getContext() == null) return;
+				RecommendedAlbumsLayoutShimmer.setVisibility(View.GONE);
 			}
 		};
-		
+
 		_instaviral_request_listener = new RequestNetwork.RequestListener() {
 			@Override
 			public void onResponse(String _param1, String _param2, HashMap<String, Object> _param3) {
-				final String _tag = _param1;
-				final String _response = _param2;
-				final HashMap<String, Object> _responseHeaders = _param3;
+				if (!isAdded() || getContext() == null) return;
 				try {
-					
-					JSONObject main = new JSONObject(_response);
-					
+					JSONObject main = new JSONObject(_param2);
 					JSONArray results = main.getJSONArray("results");
-					
 					ins.clear();
-					
+
 					for (int i = 0; i < results.length(); i++) {
-						
 						HashMap<String, Object> map3 = new HashMap<>();
-						
 						JSONObject item = results.getJSONObject(i);
-						
 						String title = item.optString("name", "Unknown");
-						
-						
-						// ARTIST
+
 						String artist = "Unknown";
-						
 						JSONObject artistsObj = item.optJSONObject("artists");
-						
 						if (artistsObj != null) {
-							
 							JSONArray primary = artistsObj.optJSONArray("primary");
-							
 							if (primary != null && primary.length() > 0) {
-								
 								JSONObject artistObj = primary.getJSONObject(0);
-								
 								artist = artistObj.optString("name", "Unknown");
-								
 							}
-							
 						}
-						
-						
-						// IMAGE
+
 						String imageurl = "";
-						
 						JSONArray imageArray = item.optJSONArray("image");
-						
 						if (imageArray != null && imageArray.length() > 2) {
-							
 							JSONObject imageObj = imageArray.getJSONObject(2);
-							
 							imageurl = imageObj.optString("url", "");
-							
 						}
-						
-						
-						// AUDIO URL
+
 						String songurl = "";
-						
 						JSONArray downloadArray = item.optJSONArray("downloadUrl");
-						
 						if (downloadArray != null && downloadArray.length() > 4) {
-							
 							JSONObject audioObj = downloadArray.getJSONObject(4);
-							
 							songurl = audioObj.optString("url", "");
-							
 						}
-						
-						
-						// SKIP EMPTY SONGS
+
 						if (songurl.equals("")) continue;
-						
-						
+
 						map3.put("name", title);
 						map3.put("artist", artist);
 						map3.put("photopath", imageurl);
 						map3.put("data", songurl);
-						
+
 						ins.add(map3);
-						
 					}
-					
-					
 				} catch (Exception e) {
-					
-					
+					Log.e("Zenhome", "Error parsing instaviral response", e);
 				}
+
+				Context ctx = getContext();
+				if (ctx == null) return;
 				Collections.shuffle(ins);
 				recyclerview3.setAdapter(new Recyclerview3Adapter(ins));
-				recyclerview3.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false));
+				recyclerview3.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
 				MusicVideosLayoutShimmer.setVisibility(View.GONE);
 				recyclerview3.setVisibility(View.VISIBLE);
-				MusicManager manager = MusicManager.getInstance(requireContext());
-				
-				manager.addSongs(ins);   // ✅ correct
+
+				MusicManager manager = MusicManager.getInstance(ctx);
+				manager.addSongs(ins);
 			}
-			
+
 			@Override
 			public void onErrorResponse(String _param1, String _param2) {
-				final String _tag = _param1;
-				final String _message = _param2;
-				
+				if (!isAdded() || getContext() == null) return;
+				MusicVideosLayoutShimmer.setVisibility(View.GONE);
 			}
 		};
-		
+
 		_ns_request_listener = new RequestNetwork.RequestListener() {
 			@Override
 			public void onResponse(String _param1, String _param2, HashMap<String, Object> _param3) {
-				final String _tag = _param1;
-				final String _response = _param2;
-				final HashMap<String, Object> _responseHeaders = _param3;
+				if (!isAdded() || getContext() == null) return;
 				try {
-					
-					JSONObject main = new JSONObject(_response);
-					
+					JSONObject main = new JSONObject(_param2);
 					JSONArray results = main.getJSONArray("results");
-					
 					nso.clear();
-					
+
 					for (int i = 0; i < results.length(); i++) {
-						
 						HashMap<String, Object> map4 = new HashMap<>();
-						
 						JSONObject item = results.getJSONObject(i);
-						
 						String title = item.optString("name", "Unknown");
-						
-						
-						// ARTIST
+
 						String artist = "Unknown";
-						
 						JSONObject artistsObj = item.optJSONObject("artists");
-						
 						if (artistsObj != null) {
-							
 							JSONArray primary = artistsObj.optJSONArray("primary");
-							
 							if (primary != null && primary.length() > 0) {
-								
 								JSONObject artistObj = primary.getJSONObject(0);
-								
 								artist = artistObj.optString("name", "Unknown");
-								
 							}
-							
 						}
-						
-						
-						// IMAGE
+
 						String imageurl = "";
-						
 						JSONArray imageArray = item.optJSONArray("image");
-						
 						if (imageArray != null && imageArray.length() > 2) {
-							
 							JSONObject imageObj = imageArray.getJSONObject(2);
-							
 							imageurl = imageObj.optString("url", "");
-							
 						}
-						
-						
-						// AUDIO URL
+
 						String songurl = "";
-						
 						JSONArray downloadArray = item.optJSONArray("downloadUrl");
-						
 						if (downloadArray != null && downloadArray.length() > 4) {
-							
 							JSONObject audioObj = downloadArray.getJSONObject(4);
-							
 							songurl = audioObj.optString("url", "");
-							
 						}
-						
-						
-						// SKIP EMPTY SONGS
+
 						if (songurl.equals("")) continue;
-						
-						
+
 						map4.put("name", title);
 						map4.put("artist", artist);
 						map4.put("photopath", imageurl);
 						map4.put("data", songurl);
-						
+
 						nso.add(map4);
-						
 					}
-					
-					
 				} catch (Exception e) {
-					
-					
-					
+					Log.e("Zenhome", "Error parsing ns response", e);
 				}
+
+				Context ctx = getContext();
+				if (ctx == null) return;
 				recyclerview5.setAdapter(new Recyclerview5Adapter(nso));
-				recyclerview5.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false));
+				recyclerview5.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
 				recyclerview4.setVisibility(View.GONE);
 				recyclerview5.setVisibility(View.VISIBLE);
-				MusicManager manager = MusicManager.getInstance(requireContext());
-				
-				manager.addSongs(stori);   // ✅ correct
+
+				MusicManager manager = MusicManager.getInstance(ctx);
+				manager.addSongs(nso);
 			}
-			
+
 			@Override
 			public void onErrorResponse(String _param1, String _param2) {
-				final String _tag = _param1;
-				final String _message = _param2;
-				
+				if (!isAdded() || getContext() == null) return;
+				recyclerview4.setVisibility(View.GONE);
 			}
 		};
 	}
-	
-	private void initializeLogic() {
-		storys.startRequestNetwork(RequestNetworkController.GET, "https://flip-saavn.vercel.app/search?query=bollywood+song", "r", _storys_request_listener);
-		_locate_vrb();
-		for(int _repeat50 = 0; _repeat50 < (int)(10); _repeat50++) {
-			{
-				HashMap<String, Object> _item = new HashMap<>();
-				_item.put("", "");
-				ShimmerListMap.add(_item);
+
+	private void setupChipClickListeners() {
+		if (chipTrending != null) chipTrending.setOnClickListener(v -> selectChip(chipTrending, "bollywood song"));
+		if (chipEnergise != null) chipEnergise.setOnClickListener(v -> selectChip(chipEnergise, "energise workout songs"));
+		if (chipFeelGood != null) chipFeelGood.setOnClickListener(v -> selectChip(chipFeelGood, "feel good songs"));
+		if (chipRelax != null) chipRelax.setOnClickListener(v -> selectChip(chipRelax, "relax lofi music"));
+		if (chipPodcasts != null) chipPodcasts.setOnClickListener(v -> selectChip(chipPodcasts, "podcasts devotional"));
+		if (chipHindi != null) chipHindi.setOnClickListener(v -> selectChip(chipHindi, "latest hindi songs"));
+		if (chipBhojpuri != null) chipBhojpuri.setOnClickListener(v -> selectChip(chipBhojpuri, "bhojpuri hits"));
+		if (chipHaryanvi != null) chipHaryanvi.setOnClickListener(v -> selectChip(chipHaryanvi, "haryanvi songs"));
+	}
+
+	private void selectChip(TextView selectedChip, String query) {
+		for (TextView chip : chipList) {
+			if (chip == selectedChip) {
+				chip.setBackgroundResource(R.drawable.bg_chip_glassy_selected);
+				chip.setTextColor(0xFFFFFFFF);
+				chip.setTypeface(null, Typeface.BOLD);
+			} else {
+				chip.setBackgroundResource(R.drawable.bg_chip_glassy_unselected);
+				chip.setTextColor(0xFFE0E0F0);
+				chip.setTypeface(null, Typeface.NORMAL);
 			}
 		}
-		QuickPicksMusicsLayoutShimmer.setAdapter(new QuickPicksMusicsLayoutShimmerAdapter(ShimmerListMap));
-		QuickPicksMusicsLayoutShimmer.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false));
-		RecommendedAlbumsLayoutShimmer.setAdapter(new RecommendedAlbumsLayoutShimmerAdapter(ShimmerListMap));
-		RecommendedAlbumsLayoutShimmer.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false));
-		MusicVideosLayoutShimmer.setAdapter(new MusicVideosLayoutShimmerAdapter(ShimmerListMap));
-		MusicVideosLayoutShimmer.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false));
-		recyclerview4.setAdapter(new Recyclerview4Adapter(ShimmerListMap));
-		recyclerview4.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false));
-		QuickPicksMusicsLayoutShimmer.setVisibility(View.VISIBLE);
-		RecommendedAlbumsLayoutShimmer.setVisibility(View.VISIBLE);
-		MusicVideosLayoutShimmer.setVisibility(View.VISIBLE);
-		recyclerview1.setVisibility(View.GONE);
-		recyclerview2.setVisibility(View.GONE);
-		recyclerview3.setVisibility(View.GONE);
-		recyclerview4.setVisibility(View.GONE);
-		StartAppSDK.init(getContext().getApplicationContext(), "204645186", false);
-		StartAppAd.disableSplash();
+
+		if (QuickPicksShimmer != null && recyclerviewQuickPicks != null) {
+			QuickPicksShimmer.setVisibility(View.VISIBLE);
+			recyclerviewQuickPicks.setVisibility(View.GONE);
+		}
+
+		HashMap<String, Object> headers = new HashMap<>();
+		headers.put("Authorization", "Bearer sk-paxsenix-h-IpQ7TD4Z5s8LS9cOLis9tVkz_AfLWh3vlbmFgqECyr1xYZ");
+		headers.put("Content-Type", "application/json");
+
+		chipRequest.setHeaders(headers);
+		chipRequest.startRequestNetwork(RequestNetworkController.GET, "https://api.paxsenix.org/jiosaavn/search?q=" + Uri.encode(query), "chip", _chip_request_listener);
 	}
-	
+
+	private void initializeLogic() {
+		Context ctx = getContext();
+		if (ctx == null) return;
+
+		for (int _repeat50 = 0; _repeat50 < 10; _repeat50++) {
+			HashMap<String, Object> _item = new HashMap<>();
+			_item.put("", "");
+			ShimmerListMap.add(_item);
+		}
+
+		if (QuickPicksShimmer != null) {
+			QuickPicksShimmer.setAdapter(new QuickPicksShimmerAdapter(ShimmerListMap));
+			QuickPicksShimmer.setLayoutManager(new GridLayoutManager(ctx, 2));
+			QuickPicksShimmer.setNestedScrollingEnabled(false);
+			QuickPicksShimmer.setVisibility(View.VISIBLE);
+		}
+
+		if (QuickPicksMusicsLayoutShimmer != null) {
+			QuickPicksMusicsLayoutShimmer.setAdapter(new QuickPicksMusicsLayoutShimmerAdapter(ShimmerListMap));
+			QuickPicksMusicsLayoutShimmer.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
+			QuickPicksMusicsLayoutShimmer.setVisibility(View.VISIBLE);
+		}
+
+		if (RecommendedAlbumsLayoutShimmer != null) {
+			RecommendedAlbumsLayoutShimmer.setAdapter(new RecommendedAlbumsLayoutShimmerAdapter(ShimmerListMap));
+			RecommendedAlbumsLayoutShimmer.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
+			RecommendedAlbumsLayoutShimmer.setVisibility(View.VISIBLE);
+		}
+
+		if (MusicVideosLayoutShimmer != null) {
+			MusicVideosLayoutShimmer.setAdapter(new MusicVideosLayoutShimmerAdapter(ShimmerListMap));
+			MusicVideosLayoutShimmer.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
+			MusicVideosLayoutShimmer.setVisibility(View.VISIBLE);
+		}
+
+		if (recyclerview4 != null) {
+			recyclerview4.setAdapter(new Recyclerview4Adapter(ShimmerListMap));
+			recyclerview4.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
+			recyclerview4.setVisibility(View.VISIBLE);
+		}
+
+		if (recyclerview1 != null) recyclerview1.setVisibility(View.GONE);
+		if (recyclerview2 != null) recyclerview2.setVisibility(View.GONE);
+		if (recyclerview3 != null) recyclerview3.setVisibility(View.GONE);
+		if (recyclerview5 != null) recyclerview5.setVisibility(View.GONE);
+
+		loadAllSections();
+	}
+
+	private void loadAllSections() {
+		HashMap<String, Object> headers = new HashMap<>();
+		headers.put("Authorization", "Bearer sk-paxsenix-h-IpQ7TD4Z5s8LS9cOLis9tVkz_AfLWh3vlbmFgqECyr1xYZ");
+		headers.put("Content-Type", "application/json");
+
+		// Section 1: Quick Picks & Top Hindi Hits
+		storys.setHeaders(headers);
+		storys.startRequestNetwork(RequestNetworkController.GET, "https://api.paxsenix.org/jiosaavn/search?q=latest+hindi+songs", "r", _storys_request_listener);
+
+		// Section 2: Bhojpuri Hits
+		ts.setHeaders(headers);
+		ts.startRequestNetwork(RequestNetworkController.GET, "https://api.paxsenix.org/jiosaavn/search?q=bhojpuri+hits", "ts", _ts_request_listener);
+
+		// Section 3: Haryanvi Beats
+		instaviral.setHeaders(headers);
+		instaviral.startRequestNetwork(RequestNetworkController.GET, "https://api.paxsenix.org/jiosaavn/search?q=haryanvi+beats", "insta", _instaviral_request_listener);
+
+		// Section 4: Top India Charts
+		ns.setHeaders(headers);
+		ns.startRequestNetwork(RequestNetworkController.GET, "https://api.paxsenix.org/jiosaavn/search?q=top+india+songs", "ns", _ns_request_listener);
+	}
+
 	public void _locate_vrb() {
 		HashMap<String, Object> headers1 = new HashMap<>();
-		
 		headers1.put("Authorization", "Bearer sk-paxsenix-h-IpQ7TD4Z5s8LS9cOLis9tVkz_AfLWh3vlbmFgqECyr1xYZ");
 		headers1.put("Content-Type", "application/json");
-		
+
 		ns.setHeaders(headers1);
-		
 		ns.startRequestNetwork(
-		RequestNetworkController.GET,
-		"https://api.paxsenix.org/jiosaavn/search?q=top+song",
-		"",
-		_ns_request_listener
+				RequestNetworkController.GET,
+				"https://api.paxsenix.org/jiosaavn/search?q=top+song",
+				"",
+				_ns_request_listener
 		);
-		
-		
-		
-		
-		HashMap<String, Object> headers2 = new HashMap<>();
-		
-		headers2.put("Authorization", "Bearer sk-paxsenix-h-IpQ7TD4Z5s8LS9cOLis9tVkz_AfLWh3vlbmFgqECyr1xYZ");
-		headers2.put("Content-Type", "application/json");
-		
-		storys.setHeaders(headers2);
-		
-		storys.startRequestNetwork(
-		RequestNetworkController.GET,
-		"https://api.paxsenix.org/jiosaavn/search?q=latest+hindi+songs",
-		"",
-		_storys_request_listener
-		);
-		HashMap<String, Object> headers3 = new HashMap<>();
-		
-		headers3.put("Authorization", "Bearer sk-paxsenix-h-IpQ7TD4Z5s8LS9cOLis9tVkz_AfLWh3vlbmFgqECyr1xYZ");
-		headers3.put("Content-Type", "application/json");
-		
-		ts.setHeaders(headers3);
-		
-		ts.startRequestNetwork(
-		RequestNetworkController.GET,
-		"https://api.paxsenix.org/jiosaavn/search?q=bhojpuri+song",
-		"",
-		_ts_request_listener
-		);
-		
-		
-		
-		
-		HashMap<String, Object> headers4 = new HashMap<>();
-		
-		headers4.put("Authorization", "Bearer sk-paxsenix-h-IpQ7TD4Z5s8LS9cOLis9tVkz_AfLWh3vlbmFgqECyr1xYZ");
-		headers4.put("Content-Type", "application/json");
-		
-		instaviral.setHeaders(headers4);
-		
-		instaviral.startRequestNetwork(
-		RequestNetworkController.GET,
-		"https://api.paxsenix.org/jiosaavn/search?q=Haryanvi+song",
-		"",
-		_instaviral_request_listener
-		);
-		
-		
-		
-		
 	}
-	
-	public class QuickPicksMusicsLayoutShimmerAdapter extends RecyclerView.Adapter<QuickPicksMusicsLayoutShimmerAdapter.ViewHolder> {
-		
+
+	private String getPlayCountFormatted(int pos) {
+		String[] counts = {"30m plays", "37k plays", "988k plays", "6.5m plays", "1.2m plays", "450k plays", "2.8m plays", "820k plays", "14m plays", "520k plays"};
+		return counts[Math.abs(pos) % counts.length];
+	}
+
+	public class QuickPicksAdapter extends Adapter<QuickPicksAdapter.ViewHolder> {
 		ArrayList<HashMap<String, Object>> _data;
-		
+
+		public QuickPicksAdapter(ArrayList<HashMap<String, Object>> _arr) {
+			_data = _arr;
+		}
+
+		@NonNull
+		@Override
+		public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+			View _v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_quick_pick, parent, false);
+			return new ViewHolder(_v);
+		}
+
+		@Override
+		public void onBindViewHolder(@NonNull ViewHolder _holder, final int _position) {
+			View _view = _holder.itemView;
+			final View linear1 = _view.findViewById(R.id.linear1);
+			final ImageView ArtZen = _view.findViewById(R.id.ArtZen);
+			final TextView TnameZen = _view.findViewById(R.id.TnameZen);
+			final TextView TartistZen = _view.findViewById(R.id.TartistZen);
+
+			if (_data != null && _position >= 0 && _position < _data.size()) {
+				HashMap<String, Object> itemMap = _data.get(_position);
+				if (itemMap != null) {
+					if (itemMap.containsKey("name") && itemMap.get("name") != null) {
+						String name = itemMap.get("name").toString();
+						TnameZen.setText(name);
+						TnameZen.setSingleLine(true);
+						TnameZen.setEllipsize(TextUtils.TruncateAt.END);
+					}
+
+					if (itemMap.containsKey("artist") && itemMap.get("artist") != null) {
+						String artist = itemMap.get("artist").toString();
+						String plays = getPlayCountFormatted(_position);
+						TartistZen.setText(artist + " • " + plays);
+						TartistZen.setSingleLine(true);
+						TartistZen.setEllipsize(TextUtils.TruncateAt.END);
+					}
+
+					if (itemMap.containsKey("photopath") && itemMap.get("photopath") != null) {
+						String album_pic = itemMap.get("photopath").toString();
+						if (!album_pic.isEmpty()) {
+							Picasso.get()
+									.load(Uri.parse(album_pic))
+									.error(R.drawable.zenloading_error)
+									.config(Bitmap.Config.RGB_565)
+									.into(ArtZen);
+						}
+					}
+
+					View clickTarget = linear1 != null ? linear1 : _view;
+					clickTarget.setOnClickListener(v -> {
+						int pos = _holder.getBindingAdapterPosition();
+						if (pos != RecyclerView.NO_POSITION && _data != null && pos < _data.size()) {
+							Context context = v.getContext();
+							Intent playIntent = new Intent(context, MusicService.class);
+							playIntent.setAction("PLAY_NEW");
+							playIntent.putExtra("SONG_LIST", _data);
+							playIntent.putExtra("POSITION", pos);
+
+							try {
+								if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+									context.startForegroundService(playIntent);
+								} else {
+									context.startService(playIntent);
+								}
+							} catch (Exception e) {
+								Log.e("ZenhomeFragment", "Error starting MusicService", e);
+							}
+						}
+					});
+				}
+			}
+		}
+
+		@Override
+		public int getItemCount() {
+			return _data != null ? _data.size() : 0;
+		}
+
+		public class ViewHolder extends RecyclerView.ViewHolder {
+			public ViewHolder(View v) {
+				super(v);
+			}
+		}
+	}
+
+	public class QuickPicksShimmerAdapter extends Adapter<QuickPicksShimmerAdapter.ViewHolder> {
+		ArrayList<HashMap<String, Object>> _data;
+
+		public QuickPicksShimmerAdapter(ArrayList<HashMap<String, Object>> _arr) {
+			_data = _arr;
+		}
+
+		@NonNull
+		@Override
+		public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+			View _v = LayoutInflater.from(parent.getContext()).inflate(R.layout.shimmer_quick_pick, parent, false);
+			return new ViewHolder(_v);
+		}
+
+		@Override
+		public void onBindViewHolder(@NonNull ViewHolder _holder, final int _position) {
+		}
+
+		@Override
+		public int getItemCount() {
+			return _data != null ? _data.size() : 0;
+		}
+
+		public class ViewHolder extends RecyclerView.ViewHolder {
+			public ViewHolder(View v) {
+				super(v);
+			}
+		}
+	}
+
+	public class QuickPicksMusicsLayoutShimmerAdapter extends Adapter<QuickPicksMusicsLayoutShimmerAdapter.ViewHolder> {
+		ArrayList<HashMap<String, Object>> _data;
+
 		public QuickPicksMusicsLayoutShimmerAdapter(ArrayList<HashMap<String, Object>> _arr) {
 			_data = _arr;
 		}
-		
+
+		@NonNull
 		@Override
-		public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-			LayoutInflater _inflater = getActivity().getLayoutInflater();
-			View _v = _inflater.inflate(R.layout.shimmer, null);
-			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			_v.setLayoutParams(_lp);
+		public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+			View _v = LayoutInflater.from(parent.getContext()).inflate(R.layout.shimmer, parent, false);
 			return new ViewHolder(_v);
 		}
-		
+
 		@Override
-		public void onBindViewHolder(ViewHolder _holder, final int _position) {
-			View _view = _holder.itemView;
-			
-			final LinearLayout linear1 = _view.findViewById(R.id.linear1);
-			final LinearLayout linear2 = _view.findViewById(R.id.linear2);
-			final LinearLayout mMusicInfoMiddle = _view.findViewById(R.id.mMusicInfoMiddle);
-			final androidx.cardview.widget.CardView mAlbumCard = _view.findViewById(R.id.mAlbumCard);
-			final LinearLayout linear5 = _view.findViewById(R.id.linear5);
-			final ImageView ArtZen = _view.findViewById(R.id.ArtZen);
-			final com.facebook.shimmer.ShimmerFrameLayout linear6 = _view.findViewById(R.id.linear6);
-			final com.facebook.shimmer.ShimmerFrameLayout linear7 = _view.findViewById(R.id.linear7);
-			
-			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			_view.setLayoutParams(_lp);
+		public void onBindViewHolder(@NonNull ViewHolder _holder, final int _position) {
 		}
-		
+
 		@Override
 		public int getItemCount() {
-			return _data.size();
+			return _data != null ? _data.size() : 0;
 		}
-		
+
 		public class ViewHolder extends RecyclerView.ViewHolder {
 			public ViewHolder(View v) {
 				super(v);
 			}
 		}
 	}
-	
-	public class Recyclerview1Adapter extends RecyclerView.Adapter<Recyclerview1Adapter.ViewHolder> {
-		
+
+	public class Recyclerview1Adapter extends Adapter<Recyclerview1Adapter.ViewHolder> {
 		ArrayList<HashMap<String, Object>> _data;
-		
+
 		public Recyclerview1Adapter(ArrayList<HashMap<String, Object>> _arr) {
 			_data = _arr;
 		}
-		
+
+		@NonNull
 		@Override
-		public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-			LayoutInflater _inflater = getActivity().getLayoutInflater();
-			View _v = _inflater.inflate(R.layout.zenlistmusic, null);
-			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			_v.setLayoutParams(_lp);
+		public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+			View _v = LayoutInflater.from(parent.getContext()).inflate(R.layout.zenlistmusic, parent, false);
 			return new ViewHolder(_v);
 		}
-		
+
 		@Override
-		public void onBindViewHolder(ViewHolder _holder, final int _position) {
+		public void onBindViewHolder(@NonNull ViewHolder _holder, final int _position) {
 			View _view = _holder.itemView;
-			
 			final LinearLayout linear1 = _view.findViewById(R.id.linear1);
-			final LinearLayout linear2 = _view.findViewById(R.id.linear2);
-			final LinearLayout linear3 = _view.findViewById(R.id.linear3);
-			final androidx.cardview.widget.CardView mAlbumCard = _view.findViewById(R.id.mAlbumCard);
-			final LinearLayout linear5 = _view.findViewById(R.id.linear5);
 			final ImageView ArtZen = _view.findViewById(R.id.ArtZen);
 			final TextView TnameZen = _view.findViewById(R.id.TnameZen);
 			final TextView TartistZen = _view.findViewById(R.id.TartistZen);
-			
-			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			_view.setLayoutParams(_lp);
+
 			if (_data != null && _position >= 0 && _position < _data.size()) {
-				// Manejar el nombre de la canción
-				if (_data.get(_position).containsKey("name")) {
-					String name = _data.get(_position).get("name").toString();
-					TnameZen.setTypeface(Typeface.createFromAsset(_view.getContext().getAssets(), "fonts/zenlt.ttf"), 0);
-					TnameZen.setText(name);
-					TnameZen.setSingleLine(true);
-					TnameZen.setEllipsize(TextUtils.TruncateAt.END);
-				}
-				
-				// Manejar el artista
-				if (_data.get(_position).containsKey("artist")) {
-					String artist = _data.get(_position).get("artist").toString();
-					TartistZen.setTypeface(Typeface.createFromAsset(_view.getContext().getAssets(), "fonts/zenlt.ttf"), 0);
-					TartistZen.setText(artist);
-					TartistZen.setSingleLine(true);
-					TartistZen.setEllipsize(TextUtils.TruncateAt.END);
-				}
-				
-				// Manejar la imagen del álbum
-				if (_data.get(_position).containsKey("photopath")) {
-					String album_pic = _data.get(_position).get("photopath").toString();
-					Uri imageUri = Uri.parse(album_pic);
-					
-					// Mejorar el manejo de memoria con Picasso
-					Picasso.get()
-					.load(imageUri)
-					.error(R.drawable.zenloading_error)
-					.config(Bitmap.Config.RGB_565) // Optimizar uso de memoria
-					.into(ArtZen, new Callback() {
-						@Override
-						public void onSuccess() {
-							// La imagen se cargó exitosamente
+				HashMap<String, Object> itemMap = _data.get(_position);
+				if (itemMap != null) {
+					if (itemMap.containsKey("name") && itemMap.get("name") != null) {
+						String name = itemMap.get("name").toString();
+						TnameZen.setText(name);
+						TnameZen.setSingleLine(true);
+						TnameZen.setEllipsize(TextUtils.TruncateAt.END);
+					}
+
+					if (itemMap.containsKey("artist") && itemMap.get("artist") != null) {
+						String artist = itemMap.get("artist").toString();
+						TartistZen.setText(artist);
+						TartistZen.setSingleLine(true);
+						TartistZen.setEllipsize(TextUtils.TruncateAt.END);
+					}
+
+					if (itemMap.containsKey("photopath") && itemMap.get("photopath") != null) {
+						String album_pic = itemMap.get("photopath").toString();
+						if (!album_pic.isEmpty()) {
+							Picasso.get()
+									.load(Uri.parse(album_pic))
+									.error(R.drawable.zenloading_error)
+									.config(Bitmap.Config.RGB_565)
+									.into(ArtZen);
 						}
-						@Override
-						public void onError(Exception e) {
-							// Manejar el error si es necesario
-						}
-					});
-					
-				}
-				
-				// Mejorar el click listener
-				linear1.setOnClickListener(new View.OnClickListener() {    
-					@Override    
-					public void onClick(View v) {    
-						int position = _holder.getBindingAdapterPosition();    
-						if (position != RecyclerView.NO_POSITION) {    
+					}
+
+					linear1.setOnClickListener(v -> {
+						int pos = _holder.getBindingAdapterPosition();
+						if (pos != RecyclerView.NO_POSITION && _data != null && pos < _data.size()) {
 							Context context = v.getContext();
-							
-							// Obtener la canción seleccionada de manera segura
-							HashMap<String, Object> clickedSong = _data.get(position);
-							if (clickedSong == null) return;
-							
-							// Obtener la lista completa de manera más eficiente
-							SharedPreferences prefs = getContext().getSharedPreferences("songZEN", Context.MODE_PRIVATE);
-							String json = prefs.getString("songZEN", "");  
-							
-							if (TextUtils.isEmpty(json)) {
-								SketchwareUtil.showMessage(context, "Error: Lista de canciones no disponible");
-								return;
-							}
-							
+							Intent playIntent = new Intent(context, MusicService.class);
+							playIntent.setAction("PLAY_NEW");
+							playIntent.putExtra("SONG_LIST", _data);
+							playIntent.putExtra("POSITION", pos);
+
 							try {
-								ArrayList<HashMap<String, Object>> fullList = stori;
-								
-								if (fullList == null || fullList.isEmpty()) {
-									SketchwareUtil.showMessage(context, "Error: Lista de canciones vacía");
-									return;
-								}
-								
-								// Buscar la posición de manera más eficiente
-								int fullPosition = findSongPosition(fullList, clickedSong);
-								
-								if (fullPosition != -1) {
-									Intent playIntent = new Intent(context, MusicService.class);    
-									playIntent.setAction("PLAY_NEW");    
-									playIntent.putExtra("SONG_LIST", fullList);    
-									playIntent.putExtra("POSITION", fullPosition);    
-									
-									// Iniciar el servicio de manera segura
-									try {
-										if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {  
-											context.startForegroundService(playIntent);  
-										} else {  
-											context.startService(playIntent);  
-										}
-									} catch (Exception e) {
-										SketchwareUtil.showMessage(context, "Error iniciando el servicio de música");
-										e.printStackTrace();
-									}
+								if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+									context.startForegroundService(playIntent);
 								} else {
-									SketchwareUtil.showMessage(context, "Canción no encontrada en la lista completa");
+									context.startService(playIntent);
 								}
 							} catch (Exception e) {
-								SketchwareUtil.showMessage(context, "Error procesando la lista de canciones");
-								e.printStackTrace();
+								Log.e("ZenhomeFragment", "Error starting MusicService", e);
 							}
-						}    
-					}    
-				});
-			}
-		}
-		// Método auxiliar para encontrar la posición de la canción
-		private int findSongPosition(ArrayList<HashMap<String, Object>> fullList, HashMap<String, Object> song) {
-			String songData = (String) song.get("data");
-			if (songData == null) return -1;
-			
-			for (int i = 0; i < fullList.size(); i++) {
-				String currentData = (String) fullList.get(i).get("data");
-				if (songData.equals(currentData)) {
-					return i;
+						}
+					});
 				}
 			}
-			return -1;
-		}{
 		}
-		
+
 		@Override
 		public int getItemCount() {
-			return _data.size();
+			return _data != null ? _data.size() : 0;
 		}
-		
+
 		public class ViewHolder extends RecyclerView.ViewHolder {
 			public ViewHolder(View v) {
 				super(v);
 			}
 		}
 	}
-	
-	public class RecommendedAlbumsLayoutShimmerAdapter extends RecyclerView.Adapter<RecommendedAlbumsLayoutShimmerAdapter.ViewHolder> {
-		
+
+	public class RecommendedAlbumsLayoutShimmerAdapter extends Adapter<RecommendedAlbumsLayoutShimmerAdapter.ViewHolder> {
 		ArrayList<HashMap<String, Object>> _data;
-		
+
 		public RecommendedAlbumsLayoutShimmerAdapter(ArrayList<HashMap<String, Object>> _arr) {
 			_data = _arr;
 		}
-		
+
+		@NonNull
 		@Override
-		public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-			LayoutInflater _inflater = getActivity().getLayoutInflater();
-			View _v = _inflater.inflate(R.layout.shimmer, null);
-			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			_v.setLayoutParams(_lp);
+		public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+			View _v = LayoutInflater.from(parent.getContext()).inflate(R.layout.shimmer, parent, false);
 			return new ViewHolder(_v);
 		}
-		
+
 		@Override
-		public void onBindViewHolder(ViewHolder _holder, final int _position) {
-			View _view = _holder.itemView;
-			
-			final LinearLayout linear1 = _view.findViewById(R.id.linear1);
-			final LinearLayout linear2 = _view.findViewById(R.id.linear2);
-			final LinearLayout mMusicInfoMiddle = _view.findViewById(R.id.mMusicInfoMiddle);
-			final androidx.cardview.widget.CardView mAlbumCard = _view.findViewById(R.id.mAlbumCard);
-			final LinearLayout linear5 = _view.findViewById(R.id.linear5);
-			final ImageView ArtZen = _view.findViewById(R.id.ArtZen);
-			final com.facebook.shimmer.ShimmerFrameLayout linear6 = _view.findViewById(R.id.linear6);
-			final com.facebook.shimmer.ShimmerFrameLayout linear7 = _view.findViewById(R.id.linear7);
-			
-			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			_view.setLayoutParams(_lp);
+		public void onBindViewHolder(@NonNull ViewHolder _holder, final int _position) {
 		}
-		
+
 		@Override
 		public int getItemCount() {
-			return _data.size();
+			return _data != null ? _data.size() : 0;
 		}
-		
+
 		public class ViewHolder extends RecyclerView.ViewHolder {
 			public ViewHolder(View v) {
 				super(v);
 			}
 		}
 	}
-	
-	public class Recyclerview2Adapter extends RecyclerView.Adapter<Recyclerview2Adapter.ViewHolder> {
-		
+
+	public class Recyclerview2Adapter extends Adapter<Recyclerview2Adapter.ViewHolder> {
 		ArrayList<HashMap<String, Object>> _data;
-		
+
 		public Recyclerview2Adapter(ArrayList<HashMap<String, Object>> _arr) {
 			_data = _arr;
 		}
-		
+
+		@NonNull
 		@Override
-		public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-			LayoutInflater _inflater = getActivity().getLayoutInflater();
-			View _v = _inflater.inflate(R.layout.zenlistmusic, null);
-			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			_v.setLayoutParams(_lp);
+		public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+			View _v = LayoutInflater.from(parent.getContext()).inflate(R.layout.zenlistmusic, parent, false);
 			return new ViewHolder(_v);
 		}
-		
+
 		@Override
-		public void onBindViewHolder(ViewHolder _holder, final int _position) {
+		public void onBindViewHolder(@NonNull ViewHolder _holder, final int _position) {
 			View _view = _holder.itemView;
-			
 			final LinearLayout linear1 = _view.findViewById(R.id.linear1);
-			final LinearLayout linear2 = _view.findViewById(R.id.linear2);
-			final LinearLayout linear3 = _view.findViewById(R.id.linear3);
-			final androidx.cardview.widget.CardView mAlbumCard = _view.findViewById(R.id.mAlbumCard);
-			final LinearLayout linear5 = _view.findViewById(R.id.linear5);
 			final ImageView ArtZen = _view.findViewById(R.id.ArtZen);
 			final TextView TnameZen = _view.findViewById(R.id.TnameZen);
 			final TextView TartistZen = _view.findViewById(R.id.TartistZen);
-			
-			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			_view.setLayoutParams(_lp);
+
 			if (_data != null && _position >= 0 && _position < _data.size()) {
-				// Manejar el nombre de la canción
-				if (_data.get(_position).containsKey("name")) {
-					String name = _data.get(_position).get("name").toString();
-					TnameZen.setTypeface(Typeface.createFromAsset(_view.getContext().getAssets(), "fonts/zenlt.ttf"), 0);
-					TnameZen.setText(name);
-					TnameZen.setSingleLine(true);
-					TnameZen.setEllipsize(TextUtils.TruncateAt.END);
-				}
-				
-				// Manejar el artista
-				if (_data.get(_position).containsKey("artist")) {
-					String artist = _data.get(_position).get("artist").toString();
-					TartistZen.setTypeface(Typeface.createFromAsset(_view.getContext().getAssets(), "fonts/zenlt.ttf"), 0);
-					TartistZen.setText(artist);
-					TartistZen.setSingleLine(true);
-					TartistZen.setEllipsize(TextUtils.TruncateAt.END);
-				}
-				
-				// Manejar la imagen del álbum
-				if (_data.get(_position).containsKey("photopath")) {
-					String album_pic = _data.get(_position).get("photopath").toString();
-					android.net.Uri imageUri = android.net.Uri.parse(album_pic);
-					
-					// Mejorar el manejo de memoria con Picasso
-					Picasso.get()
-					.load(imageUri)
-					.error(R.drawable.zenloading_error)
-					.config(Bitmap.Config.RGB_565) // Optimizar uso de memoria
-					.into(ArtZen, new Callback() {
-						@Override
-						public void onSuccess() {
-							// La imagen se cargó exitosamente
+				HashMap<String, Object> itemMap = _data.get(_position);
+				if (itemMap != null) {
+					if (itemMap.containsKey("name") && itemMap.get("name") != null) {
+						String name = itemMap.get("name").toString();
+						TnameZen.setText(name);
+						TnameZen.setSingleLine(true);
+						TnameZen.setEllipsize(TextUtils.TruncateAt.END);
+					}
+
+					if (itemMap.containsKey("artist") && itemMap.get("artist") != null) {
+						String artist = itemMap.get("artist").toString();
+						TartistZen.setText(artist);
+						TartistZen.setSingleLine(true);
+						TartistZen.setEllipsize(TextUtils.TruncateAt.END);
+					}
+
+					if (itemMap.containsKey("photopath") && itemMap.get("photopath") != null) {
+						String album_pic = itemMap.get("photopath").toString();
+						if (!album_pic.isEmpty()) {
+							Picasso.get()
+									.load(Uri.parse(album_pic))
+									.error(R.drawable.zenloading_error)
+									.config(Bitmap.Config.RGB_565)
+									.into(ArtZen);
 						}
-						@Override
-						public void onError(Exception e) {
-							// Manejar el error si es necesario
-						}
-					});
-					
-				}
-				
-				// Mejorar el click listener
-				linear1.setOnClickListener(new View.OnClickListener() {    
-					@Override    
-					public void onClick(View v) {    
-						int position = _holder.getBindingAdapterPosition();    
-						if (position != RecyclerView.NO_POSITION) {    
+					}
+
+					linear1.setOnClickListener(v -> {
+						int pos = _holder.getBindingAdapterPosition();
+						if (pos != RecyclerView.NO_POSITION && _data != null && pos < _data.size()) {
 							Context context = v.getContext();
-							
-							// Obtener la canción seleccionada de manera segura
-							HashMap<String, Object> clickedSong = _data.get(position);
-							if (clickedSong == null) return;
-							
-							// Obtener la lista completa de manera más eficiente
-							SharedPreferences prefs = getContext().getSharedPreferences("songZEN", Context.MODE_PRIVATE);
-							String json = prefs.getString("songZEN", "");  
-							
-							if (TextUtils.isEmpty(json)) {
-								SketchwareUtil.showMessage(context, "Error: Lista de canciones no disponible");
-								return;
-							}
-							
+							Intent playIntent = new Intent(context, MusicService.class);
+							playIntent.setAction("PLAY_NEW");
+							playIntent.putExtra("SONG_LIST", _data);
+							playIntent.putExtra("POSITION", pos);
+
 							try {
-								ArrayList<HashMap<String, Object>> fullList = y;
-								
-								if (fullList == null || fullList.isEmpty()) {
-									SketchwareUtil.showMessage(context, "Error: Lista de canciones vacía");
-									return;
-								}
-								
-								// Buscar la posición de manera más eficiente
-								int fullPosition = findSongPosition(fullList, clickedSong);
-								
-								if (fullPosition != -1) {
-									Intent playIntent = new Intent(context, MusicService.class);    
-									playIntent.setAction("PLAY_NEW");    
-									playIntent.putExtra("SONG_LIST", fullList);    
-									playIntent.putExtra("POSITION", fullPosition);    
-									
-									// Iniciar el servicio de manera segura
-									try {
-										if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {  
-											context.startForegroundService(playIntent);  
-										} else {  
-											context.startService(playIntent);  
-										}
-									} catch (Exception e) {
-										SketchwareUtil.showMessage(context, "Error iniciando el servicio de música");
-										e.printStackTrace();
-									}
+								if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+									context.startForegroundService(playIntent);
 								} else {
-									SketchwareUtil.showMessage(context, "Canción no encontrada en la lista completa");
+									context.startService(playIntent);
 								}
 							} catch (Exception e) {
-								SketchwareUtil.showMessage(context, "Error procesando la lista de canciones");
-								e.printStackTrace();
+								Log.e("ZenhomeFragment", "Error starting MusicService", e);
 							}
-						}    
-					}    
-				});
-			}
-		}
-		// Método auxiliar para encontrar la posición de la canción
-		private int findSongPosition(ArrayList<HashMap<String, Object>> fullList, HashMap<String, Object> song) {
-			String songData = (String) song.get("data");
-			if (songData == null) return -1;
-			
-			for (int i = 0; i < fullList.size(); i++) {
-				String currentData = (String) fullList.get(i).get("data");
-				if (songData.equals(currentData)) {
-					return i;
+						}
+					});
 				}
 			}
-			return -1;
-		}{
 		}
-		
+
 		@Override
 		public int getItemCount() {
-			return _data.size();
+			return _data != null ? _data.size() : 0;
 		}
-		
+
 		public class ViewHolder extends RecyclerView.ViewHolder {
 			public ViewHolder(View v) {
 				super(v);
 			}
 		}
 	}
-	
-	public class MusicVideosLayoutShimmerAdapter extends RecyclerView.Adapter<MusicVideosLayoutShimmerAdapter.ViewHolder> {
-		
+
+	public class MusicVideosLayoutShimmerAdapter extends Adapter<MusicVideosLayoutShimmerAdapter.ViewHolder> {
 		ArrayList<HashMap<String, Object>> _data;
-		
+
 		public MusicVideosLayoutShimmerAdapter(ArrayList<HashMap<String, Object>> _arr) {
 			_data = _arr;
 		}
-		
+
+		@NonNull
 		@Override
-		public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-			LayoutInflater _inflater = getActivity().getLayoutInflater();
-			View _v = _inflater.inflate(R.layout.shimmer, null);
-			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			_v.setLayoutParams(_lp);
+		public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+			View _v = LayoutInflater.from(parent.getContext()).inflate(R.layout.shimmer, parent, false);
 			return new ViewHolder(_v);
 		}
-		
+
 		@Override
-		public void onBindViewHolder(ViewHolder _holder, final int _position) {
-			View _view = _holder.itemView;
-			
-			final LinearLayout linear1 = _view.findViewById(R.id.linear1);
-			final LinearLayout linear2 = _view.findViewById(R.id.linear2);
-			final LinearLayout mMusicInfoMiddle = _view.findViewById(R.id.mMusicInfoMiddle);
-			final androidx.cardview.widget.CardView mAlbumCard = _view.findViewById(R.id.mAlbumCard);
-			final LinearLayout linear5 = _view.findViewById(R.id.linear5);
-			final ImageView ArtZen = _view.findViewById(R.id.ArtZen);
-			final com.facebook.shimmer.ShimmerFrameLayout linear6 = _view.findViewById(R.id.linear6);
-			final com.facebook.shimmer.ShimmerFrameLayout linear7 = _view.findViewById(R.id.linear7);
-			
-			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			_view.setLayoutParams(_lp);
+		public void onBindViewHolder(@NonNull ViewHolder _holder, final int _position) {
 		}
-		
+
 		@Override
 		public int getItemCount() {
-			return _data.size();
+			return _data != null ? _data.size() : 0;
 		}
-		
+
 		public class ViewHolder extends RecyclerView.ViewHolder {
 			public ViewHolder(View v) {
 				super(v);
 			}
 		}
 	}
-	
-	public class Recyclerview3Adapter extends RecyclerView.Adapter<Recyclerview3Adapter.ViewHolder> {
-		
+
+	public class Recyclerview3Adapter extends Adapter<Recyclerview3Adapter.ViewHolder> {
 		ArrayList<HashMap<String, Object>> _data;
-		
+
 		public Recyclerview3Adapter(ArrayList<HashMap<String, Object>> _arr) {
 			_data = _arr;
 		}
-		
+
+		@NonNull
 		@Override
-		public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-			LayoutInflater _inflater = getActivity().getLayoutInflater();
-			View _v = _inflater.inflate(R.layout.zenlistmusic, null);
-			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			_v.setLayoutParams(_lp);
+		public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+			View _v = LayoutInflater.from(parent.getContext()).inflate(R.layout.zenlistmusic, parent, false);
 			return new ViewHolder(_v);
 		}
-		
+
 		@Override
-		public void onBindViewHolder(ViewHolder _holder, final int _position) {
+		public void onBindViewHolder(@NonNull ViewHolder _holder, final int _position) {
 			View _view = _holder.itemView;
-			
 			final LinearLayout linear1 = _view.findViewById(R.id.linear1);
-			final LinearLayout linear2 = _view.findViewById(R.id.linear2);
-			final LinearLayout linear3 = _view.findViewById(R.id.linear3);
-			final androidx.cardview.widget.CardView mAlbumCard = _view.findViewById(R.id.mAlbumCard);
-			final LinearLayout linear5 = _view.findViewById(R.id.linear5);
 			final ImageView ArtZen = _view.findViewById(R.id.ArtZen);
 			final TextView TnameZen = _view.findViewById(R.id.TnameZen);
 			final TextView TartistZen = _view.findViewById(R.id.TartistZen);
-			
-			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			_view.setLayoutParams(_lp);
+
 			if (_data != null && _position >= 0 && _position < _data.size()) {
-				// Manejar el nombre de la canción
-				if (_data.get(_position).containsKey("name")) {
-					String name = _data.get(_position).get("name").toString();
-					TnameZen.setTypeface(Typeface.createFromAsset(_view.getContext().getAssets(), "fonts/zenlt.ttf"), 0);
-					TnameZen.setText(name);
-					TnameZen.setSingleLine(true);
-					TnameZen.setEllipsize(TextUtils.TruncateAt.END);
-				}
-				
-				// Manejar el artista
-				if (_data.get(_position).containsKey("artist")) {
-					String artist = _data.get(_position).get("artist").toString();
-					TartistZen.setTypeface(Typeface.createFromAsset(_view.getContext().getAssets(), "fonts/zenlt.ttf"), 0);
-					TartistZen.setText(artist);
-					TartistZen.setSingleLine(true);
-					TartistZen.setEllipsize(TextUtils.TruncateAt.END);
-				}
-				
-				// Manejar la imagen del álbum
-				if (_data.get(_position).containsKey("photopath")) {
-					String album_pic = _data.get(_position).get("photopath").toString();
-					android.net.Uri imageUri = android.net.Uri.parse(album_pic);
-					
-					// Mejorar el manejo de memoria con Picasso
-					Picasso.get()
-					.load(imageUri)
-					.error(R.drawable.zenloading_error)
-					.config(Bitmap.Config.RGB_565) // Optimizar uso de memoria
-					.into(ArtZen, new Callback() {
-						@Override
-						public void onSuccess() {
-							// La imagen se cargó exitosamente
+				HashMap<String, Object> itemMap = _data.get(_position);
+				if (itemMap != null) {
+					if (itemMap.containsKey("name") && itemMap.get("name") != null) {
+						String name = itemMap.get("name").toString();
+						TnameZen.setText(name);
+						TnameZen.setSingleLine(true);
+						TnameZen.setEllipsize(TextUtils.TruncateAt.END);
+					}
+
+					if (itemMap.containsKey("artist") && itemMap.get("artist") != null) {
+						String artist = itemMap.get("artist").toString();
+						TartistZen.setText(artist);
+						TartistZen.setSingleLine(true);
+						TartistZen.setEllipsize(TextUtils.TruncateAt.END);
+					}
+
+					if (itemMap.containsKey("photopath") && itemMap.get("photopath") != null) {
+						String album_pic = itemMap.get("photopath").toString();
+						if (!album_pic.isEmpty()) {
+							Picasso.get()
+									.load(Uri.parse(album_pic))
+									.error(R.drawable.zenloading_error)
+									.config(Bitmap.Config.RGB_565)
+									.into(ArtZen);
 						}
-						@Override
-						public void onError(Exception e) {
-							// Manejar el error si es necesario
-						}
-					});
-					
-				}
-				
-				// Mejorar el click listener
-				linear1.setOnClickListener(new View.OnClickListener() {    
-					@Override    
-					public void onClick(View v) {    
-						int position = _holder.getBindingAdapterPosition();    
-						if (position != RecyclerView.NO_POSITION) {    
+					}
+
+					linear1.setOnClickListener(v -> {
+						int pos = _holder.getBindingAdapterPosition();
+						if (pos != RecyclerView.NO_POSITION && _data != null && pos < _data.size()) {
 							Context context = v.getContext();
-							
-							// Obtener la canción seleccionada de manera segura
-							HashMap<String, Object> clickedSong = _data.get(position);
-							if (clickedSong == null) return;
-							
-							// Obtener la lista completa de manera más eficiente
-							SharedPreferences prefs = getContext().getSharedPreferences("songZEN", Context.MODE_PRIVATE);
-							String json = prefs.getString("songZEN", "");  
-							
-							if (TextUtils.isEmpty(json)) {
-								SketchwareUtil.showMessage(context, "Error: Lista de canciones no disponible");
-								return;
-							}
-							
+							Intent playIntent = new Intent(context, MusicService.class);
+							playIntent.setAction("PLAY_NEW");
+							playIntent.putExtra("SONG_LIST", _data);
+							playIntent.putExtra("POSITION", pos);
+
 							try {
-								ArrayList<HashMap<String, Object>> fullList = ins;
-								
-								if (fullList == null || fullList.isEmpty()) {
-									SketchwareUtil.showMessage(context, "Error: Lista de canciones vacía");
-									return;
-								}
-								
-								// Buscar la posición de manera más eficiente
-								int fullPosition = findSongPosition(fullList, clickedSong);
-								
-								if (fullPosition != -1) {
-									Intent playIntent = new Intent(context, MusicService.class);    
-									playIntent.setAction("PLAY_NEW");    
-									playIntent.putExtra("SONG_LIST", fullList);    
-									playIntent.putExtra("POSITION", fullPosition);    
-									
-									// Iniciar el servicio de manera segura
-									try {
-										if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {  
-											context.startForegroundService(playIntent);  
-										} else {  
-											context.startService(playIntent);  
-										}
-									} catch (Exception e) {
-										SketchwareUtil.showMessage(context, "Error iniciando el servicio de música");
-										e.printStackTrace();
-									}
+								if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+									context.startForegroundService(playIntent);
 								} else {
-									SketchwareUtil.showMessage(context, "Canción no encontrada en la lista completa");
+									context.startService(playIntent);
 								}
 							} catch (Exception e) {
-								SketchwareUtil.showMessage(context, "Error procesando la lista de canciones");
-								e.printStackTrace();
+								Log.e("ZenhomeFragment", "Error starting MusicService", e);
 							}
-						}    
-					}    
-				});
-			}
-		}
-		// Método auxiliar para encontrar la posición de la canción
-		private int findSongPosition(ArrayList<HashMap<String, Object>> fullList, HashMap<String, Object> song) {
-			String songData = (String) song.get("data");
-			if (songData == null) return -1;
-			
-			for (int i = 0; i < fullList.size(); i++) {
-				String currentData = (String) fullList.get(i).get("data");
-				if (songData.equals(currentData)) {
-					return i;
+						}
+					});
 				}
 			}
-			return -1;
-		}{
 		}
-		
+
 		@Override
 		public int getItemCount() {
-			return _data.size();
+			return _data != null ? _data.size() : 0;
 		}
-		
+
 		public class ViewHolder extends RecyclerView.ViewHolder {
 			public ViewHolder(View v) {
 				super(v);
 			}
 		}
 	}
-	
-	public class Recyclerview4Adapter extends RecyclerView.Adapter<Recyclerview4Adapter.ViewHolder> {
-		
+
+	public class Recyclerview4Adapter extends Adapter<Recyclerview4Adapter.ViewHolder> {
 		ArrayList<HashMap<String, Object>> _data;
-		
+
 		public Recyclerview4Adapter(ArrayList<HashMap<String, Object>> _arr) {
 			_data = _arr;
 		}
-		
+
+		@NonNull
 		@Override
-		public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-			LayoutInflater _inflater = getActivity().getLayoutInflater();
-			View _v = _inflater.inflate(R.layout.shimmer, null);
-			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			_v.setLayoutParams(_lp);
+		public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+			View _v = LayoutInflater.from(parent.getContext()).inflate(R.layout.shimmer, parent, false);
 			return new ViewHolder(_v);
 		}
-		
+
 		@Override
-		public void onBindViewHolder(ViewHolder _holder, final int _position) {
-			View _view = _holder.itemView;
-			
-			final LinearLayout linear1 = _view.findViewById(R.id.linear1);
-			final LinearLayout linear2 = _view.findViewById(R.id.linear2);
-			final LinearLayout mMusicInfoMiddle = _view.findViewById(R.id.mMusicInfoMiddle);
-			final androidx.cardview.widget.CardView mAlbumCard = _view.findViewById(R.id.mAlbumCard);
-			final LinearLayout linear5 = _view.findViewById(R.id.linear5);
-			final ImageView ArtZen = _view.findViewById(R.id.ArtZen);
-			final com.facebook.shimmer.ShimmerFrameLayout linear6 = _view.findViewById(R.id.linear6);
-			final com.facebook.shimmer.ShimmerFrameLayout linear7 = _view.findViewById(R.id.linear7);
-			
-			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			_view.setLayoutParams(_lp);
+		public void onBindViewHolder(@NonNull ViewHolder _holder, final int _position) {
 		}
-		
+
 		@Override
 		public int getItemCount() {
-			return _data.size();
+			return _data != null ? _data.size() : 0;
 		}
-		
+
 		public class ViewHolder extends RecyclerView.ViewHolder {
 			public ViewHolder(View v) {
 				super(v);
 			}
 		}
 	}
-	
-	public class Recyclerview5Adapter extends RecyclerView.Adapter<Recyclerview5Adapter.ViewHolder> {
-		
+
+	public class Recyclerview5Adapter extends Adapter<Recyclerview5Adapter.ViewHolder> {
 		ArrayList<HashMap<String, Object>> _data;
-		
+
 		public Recyclerview5Adapter(ArrayList<HashMap<String, Object>> _arr) {
 			_data = _arr;
 		}
-		
+
+		@NonNull
 		@Override
-		public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-			LayoutInflater _inflater = getActivity().getLayoutInflater();
-			View _v = _inflater.inflate(R.layout.zenlistmusic, null);
-			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			_v.setLayoutParams(_lp);
+		public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+			View _v = LayoutInflater.from(parent.getContext()).inflate(R.layout.zenlistmusic, parent, false);
 			return new ViewHolder(_v);
 		}
-		
+
 		@Override
-		public void onBindViewHolder(ViewHolder _holder, final int _position) {
+		public void onBindViewHolder(@NonNull ViewHolder _holder, final int _position) {
 			View _view = _holder.itemView;
-			
 			final LinearLayout linear1 = _view.findViewById(R.id.linear1);
-			final LinearLayout linear2 = _view.findViewById(R.id.linear2);
-			final LinearLayout linear3 = _view.findViewById(R.id.linear3);
-			final androidx.cardview.widget.CardView mAlbumCard = _view.findViewById(R.id.mAlbumCard);
-			final LinearLayout linear5 = _view.findViewById(R.id.linear5);
 			final ImageView ArtZen = _view.findViewById(R.id.ArtZen);
 			final TextView TnameZen = _view.findViewById(R.id.TnameZen);
 			final TextView TartistZen = _view.findViewById(R.id.TartistZen);
-			
-			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			_view.setLayoutParams(_lp);
+
 			if (_data != null && _position >= 0 && _position < _data.size()) {
-				// Manejar el nombre de la canción
-				if (_data.get(_position).containsKey("name")) {
-					String name = _data.get(_position).get("name").toString();
-					TnameZen.setTypeface(Typeface.createFromAsset(_view.getContext().getAssets(), "fonts/zenlt.ttf"), 0);
-					TnameZen.setText(name);
-					TnameZen.setSingleLine(true);
-					TnameZen.setEllipsize(TextUtils.TruncateAt.END);
-				}
-				
-				// Manejar el artista
-				if (_data.get(_position).containsKey("artist")) {
-					String artist = _data.get(_position).get("artist").toString();
-					TartistZen.setTypeface(Typeface.createFromAsset(_view.getContext().getAssets(), "fonts/zenlt.ttf"), 0);
-					TartistZen.setText(artist);
-					TartistZen.setSingleLine(true);
-					TartistZen.setEllipsize(TextUtils.TruncateAt.END);
-				}
-				
-				// Manejar la imagen del álbum
-				if (_data.get(_position).containsKey("photopath")) {
-					String album_pic = _data.get(_position).get("photopath").toString();
-					android.net.Uri imageUri = android.net.Uri.parse(album_pic);
-					
-					// Mejorar el manejo de memoria con Picasso
-					Picasso.get()
-					.load(imageUri)
-					.error(R.drawable.zenloading_error)
-					.config(Bitmap.Config.RGB_565) // Optimizar uso de memoria
-					.into(ArtZen, new Callback() {
-						@Override
-						public void onSuccess() {
-							// La imagen se cargó exitosamente
+				HashMap<String, Object> itemMap = _data.get(_position);
+				if (itemMap != null) {
+					if (itemMap.containsKey("name") && itemMap.get("name") != null) {
+						String name = itemMap.get("name").toString();
+						TnameZen.setText(name);
+						TnameZen.setSingleLine(true);
+						TnameZen.setEllipsize(TextUtils.TruncateAt.END);
+					}
+
+					if (itemMap.containsKey("artist") && itemMap.get("artist") != null) {
+						String artist = itemMap.get("artist").toString();
+						TartistZen.setText(artist);
+						TartistZen.setSingleLine(true);
+						TartistZen.setEllipsize(TextUtils.TruncateAt.END);
+					}
+
+					if (itemMap.containsKey("photopath") && itemMap.get("photopath") != null) {
+						String album_pic = itemMap.get("photopath").toString();
+						if (!album_pic.isEmpty()) {
+							Picasso.get()
+									.load(Uri.parse(album_pic))
+									.error(R.drawable.zenloading_error)
+									.config(Bitmap.Config.RGB_565)
+									.into(ArtZen);
 						}
-						@Override
-						public void onError(Exception e) {
-							// Manejar el error si es necesario
-						}
-					});
-					
-				}
-				
-				// Mejorar el click listener
-				linear1.setOnClickListener(new View.OnClickListener() {    
-					@Override    
-					public void onClick(View v) {    
-						int position = _holder.getBindingAdapterPosition();    
-						if (position != RecyclerView.NO_POSITION) {    
+					}
+
+					linear1.setOnClickListener(v -> {
+						int pos = _holder.getBindingAdapterPosition();
+						if (pos != RecyclerView.NO_POSITION && _data != null && pos < _data.size()) {
 							Context context = v.getContext();
-							
-							// Obtener la canción seleccionada de manera segura
-							HashMap<String, Object> clickedSong = _data.get(position);
-							if (clickedSong == null) return;
-							
-							// Obtener la lista completa de manera más eficiente
-							SharedPreferences prefs = getContext().getSharedPreferences("songZEN", Context.MODE_PRIVATE);
-							String json = prefs.getString("songZEN", "");  
-							
-							if (TextUtils.isEmpty(json)) {
-								SketchwareUtil.showMessage(context, "Error: Lista de canciones no disponible");
-								return;
-							}
-							
+							Intent playIntent = new Intent(context, MusicService.class);
+							playIntent.setAction("PLAY_NEW");
+							playIntent.putExtra("SONG_LIST", _data);
+							playIntent.putExtra("POSITION", pos);
+
 							try {
-								ArrayList<HashMap<String, Object>> fullList = nso;
-								
-								if (fullList == null || fullList.isEmpty()) {
-									SketchwareUtil.showMessage(context, "Error: Lista de canciones vacía");
-									return;
-								}
-								
-								// Buscar la posición de manera más eficiente
-								int fullPosition = findSongPosition(fullList, clickedSong);
-								
-								if (fullPosition != -1) {
-									Intent playIntent = new Intent(context, MusicService.class);    
-									playIntent.setAction("PLAY_NEW");    
-									playIntent.putExtra("SONG_LIST", fullList);    
-									playIntent.putExtra("POSITION", fullPosition);    
-									
-									// Iniciar el servicio de manera segura
-									try {
-										if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {  
-											context.startForegroundService(playIntent);  
-										} else {  
-											context.startService(playIntent);  
-										}
-									} catch (Exception e) {
-										SketchwareUtil.showMessage(context, "Error iniciando el servicio de música");
-										e.printStackTrace();
-									}
+								if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+									context.startForegroundService(playIntent);
 								} else {
-									SketchwareUtil.showMessage(context, "Canción no encontrada en la lista completa");
+									context.startService(playIntent);
 								}
 							} catch (Exception e) {
-								SketchwareUtil.showMessage(context, "Error procesando la lista de canciones");
-								e.printStackTrace();
+								Log.e("ZenhomeFragment", "Error starting MusicService", e);
 							}
-						}    
-					}    
-				});
-			}
-		}
-		// Método auxiliar para encontrar la posición de la canción
-		private int findSongPosition(ArrayList<HashMap<String, Object>> fullList, HashMap<String, Object> song) {
-			String songData = (String) song.get("data");
-			if (songData == null) return -1;
-			
-			for (int i = 0; i < fullList.size(); i++) {
-				String currentData = (String) fullList.get(i).get("data");
-				if (songData.equals(currentData)) {
-					return i;
+						}
+					});
 				}
 			}
-			return -1;
-		}{
 		}
-		
+
 		@Override
 		public int getItemCount() {
-			return _data.size();
+			return _data != null ? _data.size() : 0;
 		}
-		
+
 		public class ViewHolder extends RecyclerView.ViewHolder {
 			public ViewHolder(View v) {
 				super(v);

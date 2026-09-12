@@ -1,98 +1,180 @@
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:orientation="vertical">
+	android:layout_height="wrap_content"
+	android:gravity="center"
+	android:orientation="vertical"
+	android:paddingHorizontal="20dp"
+	android:paddingVertical="12dp">
+
+	<!-- Main Dialog Container -->
 	<LinearLayout
 		android:id="@+id/linear3"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginLeft="25dp"
-		android:layout_marginTop="5dp"
-		android:layout_marginRight="25dp"
-		android:layout_marginBottom="5dp"
-		android:padding="10dp"
-		android:background="#000000"
-		android:orientation="vertical">
+		android:background="#161622"
+		android:orientation="vertical"
+		android:padding="20dp">
+
+		<!-- Header with Title, Subtitle, and Cancel Button -->
 		<LinearLayout
 			android:id="@+id/linear5"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:padding="8dp"
+			android:gravity="center_vertical"
 			android:orientation="horizontal">
-			<TextView
-				android:id="@+id/title"
-				android:focusable="false"
-				android:layout_width="wrap_content"
+
+			<LinearLayout
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_marginBottom="12dp"
-				android:gravity="center_horizontal|center_vertical"
-				android:text="Follow Us"
-				android:textSize="18sp"
-				android:textStyle="bold"
-				android:textColor="#FFFFFF"
-				android:layout_weight="1" />
+				android:layout_weight="1"
+				android:orientation="vertical">
+
+				<TextView
+					android:id="@+id/title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:focusable="false"
+					android:fontFamily="sans-serif-medium"
+					android:text="Join Our Community"
+					android:textColor="#FFFFFF"
+					android:textSize="18sp"
+					android:textStyle="bold" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="3dp"
+					android:focusable="false"
+					android:fontFamily="sans-serif"
+					android:text="Stay connected for songs &amp; updates"
+					android:textColor="#A0A0B0"
+					android:textSize="12sp" />
+			</LinearLayout>
+
 			<ImageView
 				android:id="@+id/cancel"
-				android:focusable="false"
-				android:layout_width="20dp"
-				android:layout_height="20dp"
+				android:layout_width="28dp"
+				android:layout_height="28dp"
+				android:background="?android:attr/selectableItemBackgroundBorderless"
+				android:clickable="true"
+				android:contentDescription="Close"
+				android:focusable="true"
+				android:padding="4dp"
+				android:scaleType="fitCenter"
 				android:src="@drawable/icon_cancel_round"
-				android:scaleType="fitCenter" />
+				app:tint="#A0A0B0" />
 		</LinearLayout>
+
+		<View
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:layout_marginTop="16dp"
+			android:layout_marginBottom="16dp"
+			android:background="#252536" />
+
+		<!-- Social Buttons Row -->
 		<LinearLayout
 			android:id="@+id/linear4"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:gravity="center_horizontal|center_vertical"
+			android:gravity="center"
 			android:orientation="horizontal">
+
+			<!-- Telegram Button -->
 			<LinearLayout
 				android:id="@+id/telegram_btn"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:gravity="center_horizontal|center_vertical"
+				android:layout_marginEnd="8dp"
+				android:layout_weight="1"
+				android:background="@drawable/bg_social_card"
+				android:clickable="true"
+				android:focusable="true"
+				android:gravity="center"
 				android:orientation="vertical"
-				android:layout_weight="1">
+				android:paddingHorizontal="12dp"
+				android:paddingVertical="16dp">
+
 				<ImageView
 					android:id="@+id/imageview5"
+					android:layout_width="44dp"
+					android:layout_height="44dp"
+					android:contentDescription="Telegram"
 					android:focusable="false"
-					android:layout_width="40dp"
-					android:layout_height="40dp"
-					android:src="@drawable/social_1"
-					android:scaleType="fitCenter" />
+					android:scaleType="fitCenter"
+					android:src="@drawable/social_1" />
+
 				<TextView
 					android:id="@+id/textview5"
-					android:focusable="false"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
+					android:layout_marginTop="10dp"
+					android:focusable="false"
+					android:fontFamily="sans-serif-medium"
 					android:text="Telegram"
-					android:textSize="12sp"
-					android:textColor="#FFFFFF" />
+					android:textColor="#FFFFFF"
+					android:textSize="14sp"
+					android:textStyle="bold" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="2dp"
+					android:focusable="false"
+					android:fontFamily="sans-serif"
+					android:text="Join Channel"
+					android:textColor="#33A5E5"
+					android:textSize="11sp" />
 			</LinearLayout>
+
+			<!-- Instagram Button -->
 			<LinearLayout
 				android:id="@+id/instagram_btn"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:gravity="center_horizontal|center_vertical"
+				android:layout_marginStart="8dp"
+				android:layout_weight="1"
+				android:background="@drawable/bg_social_card"
+				android:clickable="true"
+				android:focusable="true"
+				android:gravity="center"
 				android:orientation="vertical"
-				android:layout_weight="1">
+				android:paddingHorizontal="12dp"
+				android:paddingVertical="16dp">
+
 				<ImageView
 					android:id="@+id/imageview6"
+					android:layout_width="44dp"
+					android:layout_height="44dp"
+					android:contentDescription="Instagram"
 					android:focusable="false"
-					android:layout_width="40dp"
-					android:layout_height="40dp"
-					android:src="@drawable/social_2"
-					android:scaleType="fitCenter" />
+					android:scaleType="fitCenter"
+					android:src="@drawable/social_2" />
+
 				<TextView
 					android:id="@+id/textview6"
-					android:focusable="false"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
+					android:layout_marginTop="10dp"
+					android:focusable="false"
+					android:fontFamily="sans-serif-medium"
 					android:text="Instagram"
-					android:textSize="12sp"
-					android:textColor="#FFFFFF" />
+					android:textColor="#FFFFFF"
+					android:textSize="14sp"
+					android:textStyle="bold" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="2dp"
+					android:focusable="false"
+					android:fontFamily="sans-serif"
+					android:text="Follow Page"
+					android:textColor="#E1306C"
+					android:textSize="11sp" />
 			</LinearLayout>
 		</LinearLayout>
 	</LinearLayout>

@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.material.color.DynamicColors;
+import com.google.firebase.FirebaseApp;
 
 public class MyApplication extends Application {
 
@@ -26,6 +27,9 @@ public class MyApplication extends Application {
 
         // Guardar contexto global
         context = getApplicationContext();
+
+        // Inicializar Firebase globalmente
+        FirebaseApp.initializeApp(this);
 
         // Aplicar colores dinámicos y modo nocturno automático
         DynamicColors.applyToActivitiesIfAvailable(this);

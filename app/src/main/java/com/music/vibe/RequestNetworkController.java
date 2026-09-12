@@ -1,5 +1,6 @@
 package com.music.vibe;
 
+import android.app.Activity;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -157,28 +158,34 @@ public class RequestNetworkController {
 			getClient().newCall(req).enqueue(new Callback() {
 				@Override
 				public void onFailure(Call call, final IOException e) {
-					requestNetwork.getActivity().runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							requestListener.onErrorResponse(tag, e.getMessage());
-						}
-					});
+					Activity act = requestNetwork.getActivity();
+					if (act != null && !act.isFinishing()) {
+						act.runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								requestListener.onErrorResponse(tag, e.getMessage());
+							}
+						});
+					}
 				}
 				
 				@Override
 				public void onResponse(Call call, final Response response) throws IOException {
-					final String responseBody = response.body().string().trim();
-					requestNetwork.getActivity().runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							Headers b = response.headers();
-							HashMap<String, Object> map = new HashMap<>();
-							for (String s : b.names()) {
-								map.put(s, b.get(s) != null ? b.get(s) : "null");
+					final String responseBody = response.body() != null ? response.body().string().trim() : "";
+					Activity act = requestNetwork.getActivity();
+					if (act != null && !act.isFinishing()) {
+						act.runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								Headers b = response.headers();
+								HashMap<String, Object> map = new HashMap<>();
+								for (String s : b.names()) {
+									map.put(s, b.get(s) != null ? b.get(s) : "null");
+								}
+								requestListener.onResponse(tag, responseBody, map);
 							}
-							requestListener.onResponse(tag, responseBody, map);
-						}
-					});
+						});
+					}
 				}
 			});
 		} catch (Exception e) {

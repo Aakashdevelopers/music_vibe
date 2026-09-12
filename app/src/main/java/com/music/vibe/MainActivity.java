@@ -270,14 +270,28 @@ public class MainActivity extends AppCompatActivity implements MusicService.Serv
 	protected void onCreate(Bundle _savedInstanceState) {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.main);
-		setupStatusBar();
 
-        sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
-    sharedViewModel.setContext(this);  // 🔹 Importante para que Toast funcione
-getAllSongData();
-		initialize(_savedInstanceState);
-		FirebaseApp.initializeApp(this);
-		initializeLogic();
+		try {
+			setupStatusBar();
+
+			initialize(_savedInstanceState);
+			FirebaseApp.initializeApp(this);
+
+			sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+			sharedViewModel.setContext(this);
+			initializeLogic();
+		} catch (Exception e) {
+			Log.e("MainActivity", "Error in onCreate", e);
+		}
+
+
+		try {
+			getAllSongData();
+		} catch (Exception e) {
+			Log.e("MainActivity", "Error in getAllSongData", e);
+		}
+
+
 	}
 	
 	private void initialize(Bundle _savedInstanceState) {
@@ -960,13 +974,13 @@ getAllSongData();
 		prev.setOnClickListener(v -> sendServiceAction("PREV"));
 		next.setOnClickListener(v -> sendServiceAction("NEXT"));
 		playPauseBtn.setOnClickListener(v -> {
-			String action = isBound && musicService.isPlaying ? "PAUSE" : "PLAY";
+			String action = isBound && musicService != null && musicService.isPlaying ? "PAUSE" : "PLAY";
 			sendServiceAction(action);
 		});
 		
 		// Agregar esto para el segundo botón
 		prevplaypause.setOnClickListener(v -> {
-			String action = isBound && musicService.isPlaying ? "PAUSE" : "PLAY";
+			String action = isBound && musicService != null && musicService.isPlaying ? "PAUSE" : "PLAY";
 			sendServiceAction(action);
 		});
 		
@@ -1015,7 +1029,7 @@ getAllSongData();
 	// Deja solo una función
 	
 	private void sendServiceAction(String action) {
-		if (isBound) {
+		if (isBound && musicService != null) {
 			switch (action) {
 				case "PLAY":
 				musicService.playMusic();
@@ -1113,6 +1127,9 @@ getAllSongData();
 			prevname.setText(song.get("name").toString());
 			prevartista.setText(song.get("artist").toString());
 			loadAlbumArt(song.get("photopath").toString());
+			if (Ln_mini_nav != null) {
+				Ln_mini_nav.setVisibility(View.VISIBLE);
+			}
 			
 			int currentSongPosition = musicService.currentPosition;  
 			boolean isFavorited = isSongFavorited(currentSongPosition);  
@@ -1152,27 +1169,43 @@ getAllSongData();
 	}
 	// Método updatePlayerUI corregido
 	private void updatePlayerUI() {
-		if (isBound && musicService.songList != null && musicService.currentPosition < musicService.songList.size()) {
+		if (isBound && musicService != null && musicService.songList != null && !musicService.songList.isEmpty() && musicService.currentPosition >= 0 && musicService.currentPosition < musicService.songList.size()) {
 			HashMap<String, Object> currentSong = musicService.songList.get(musicService.currentPosition);
-			
-			
-			songName.setText(currentSong.get("name").toString());    
-			artistName.setText(currentSong.get("artist").toString());    
-			prevname.setText(currentSong.get("name").toString());    
-			prevartista.setText(currentSong.get("artist").toString());    
-			
-			loadAlbumArt(currentSong.get("photopath").toString());    
-			
-			playPauseBtn.setImageResource(musicService.isPlaying ? R.drawable.icon_pause_round : R.drawable.icon_play_arrow_round);    
-			int icon = musicService.isPlaying ? R.drawable.icon_pause_round : R.drawable.icon_play_arrow_round;
-			playPauseBtn.setImageResource(icon);
-			prevplaypause.setImageResource(icon);
-			// Configurar la duración de la barra de progreso  
-			int duration = musicService.getDuration();  
-			seekBar.setMax(duration);  
-			progressbar1.setMax(duration);  
+			if (currentSong != null) {
+				if (Ln_mini_nav != null) {
+					Ln_mini_nav.setVisibility(View.VISIBLE);
+				}
+
+				Object nameObj = currentSong.get("name");
+				Object artistObj = currentSong.get("artist");
+				Object photoObj = currentSong.get("photopath");
+
+				String songNameStr = nameObj != null ? nameObj.toString() : "";
+				String artistNameStr = artistObj != null ? artistObj.toString() : "";
+				String photoPathStr = photoObj != null ? photoObj.toString() : "";
+
+				songName.setText(songNameStr);
+				artistName.setText(artistNameStr);
+				prevname.setText(songNameStr);
+				prevartista.setText(artistNameStr);
+
+				if (!photoPathStr.isEmpty()) {
+					loadAlbumArt(photoPathStr);
+				}
+
+				int icon = musicService.isPlaying ? R.drawable.icon_pause_round : R.drawable.icon_play_arrow_round;
+				playPauseBtn.setImageResource(icon);
+				prevplaypause.setImageResource(icon);
+
+				int duration = musicService.getDuration();
+				seekBar.setMax(duration);
+				progressbar1.setMax(duration);
+			}
+		} else {
+			if (Ln_mini_nav != null) {
+				Ln_mini_nav.setVisibility(View.GONE);
+			}
 		}
-		
 	}
 	{
 	}
@@ -1291,17 +1324,20 @@ getAllSongData();
 		Gson gson = new Gson();
 		Type type = new TypeToken<ArrayList<HashMap<String, Object>>>() {}.getType();
 		ArrayList<HashMap<String, Object>> favoriteSongs = gson.fromJson(json, type);
-		
-		if (favoriteSongs == null) return false;  
-		
-		HashMap<String, Object> song = musicService.songList.get(songPosition);  
-		for (HashMap<String, Object> favoriteSong : favoriteSongs) {  
-			if (favoriteSong.get("data").toString().equals(song.get("data").toString())) {  
-				return true;  
-			}  
-		}  
+
+		if (favoriteSongs == null || musicService == null || musicService.songList == null || songPosition < 0 || songPosition >= musicService.songList.size()) return false;
+
+		HashMap<String, Object> song = musicService.songList.get(songPosition);
+		if (song == null || song.get("data") == null) return false;
+
+		for (HashMap<String, Object> favoriteSong : favoriteSongs) {
+			if (favoriteSong != null && favoriteSong.get("data") != null) {
+				if (favoriteSong.get("data").toString().equals(song.get("data").toString())) {
+					return true;
+				}
+			}
+		}
 		return false;
-		
 	}{
 		
 		
@@ -1393,14 +1429,14 @@ getAllSongData();
 		
 		
 		fav.setOnClickListener(v -> {
-			int currentSongPosition = musicService.currentPosition;  // O usa el índice de la canción actual
-			boolean isFavorited = isSongFavorited(currentSongPosition);
-			
-			// Cambiar el ícono
-			imageview7.setImageResource(isFavorited ? R.drawable.icon_favorite_border_round : R.drawable.icon_favorite_round);
-			
-			// Toggle de favoritos
-			musicService.toggleFavorite(currentSongPosition);
+			if (isBound && musicService != null && musicService.songList != null) {
+				int currentSongPosition = musicService.currentPosition;
+				boolean isFavorited = isSongFavorited(currentSongPosition);
+
+				imageview7.setImageResource(isFavorited ? R.drawable.icon_favorite_border_round : R.drawable.icon_favorite_round);
+
+				musicService.toggleFavorite(currentSongPosition);
+			}
 		});
 	}
 	
@@ -1503,58 +1539,63 @@ getAllSongData();
 	
 	
 	public void _NewCustomDialog(final String _Title, final String _Message, final String _YesButtonText, final String _NoButtonText, final boolean _MultiButton) {
-		if (d.contains("d")) {
-			
-		} else {
+		if (d != null && d.contains("d")) {
+			return;
+		}
+		try {
 			final AlertDialog NewCustomDialog = new AlertDialog.Builder(MainActivity.this).create();
 			LayoutInflater NewCustomDialogLI = getLayoutInflater();
 			View NewCustomDialogCV = (View) NewCustomDialogLI.inflate(R.layout.social, null);
 			NewCustomDialog.setView(NewCustomDialogCV);
-			NewCustomDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-			
-			
-			
-			
-			
-			
-			LinearLayout linear3 = (LinearLayout)
-			NewCustomDialogCV.findViewById(R.id.linear3);
-			LinearLayout instagram_btn = (LinearLayout)
-			NewCustomDialogCV.findViewById(R.id.instagram_btn);
-			LinearLayout telegram_btn = (LinearLayout)
-			NewCustomDialogCV.findViewById(R.id.telegram_btn);
-			
-			
+
+			LinearLayout linear3 = (LinearLayout) NewCustomDialogCV.findViewById(R.id.linear3);
+			LinearLayout instagram_btn = (LinearLayout) NewCustomDialogCV.findViewById(R.id.instagram_btn);
+			LinearLayout telegram_btn = (LinearLayout) NewCustomDialogCV.findViewById(R.id.telegram_btn);
 			ImageView cancel = (ImageView) NewCustomDialogCV.findViewById(R.id.cancel);
-			
-			linear3.setBackground(new GradientDrawable() { public GradientDrawable getIns(int a, int b, int c, int d) { this.setCornerRadius(a); this.setStroke(b, c); this.setColor(d); return this; } }.getIns((int)20, (int)3, 0xFFFFFFFF, 0xFF000000));
-			telegram_btn.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View _view) {
-					user.setAction(Intent.ACTION_VIEW);
-					user.setData(Uri.parse("https://t.me/amstudio_19"));
-					startActivity(user);
-					
-				}
-			});
-			cancel.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View _view) {
-					NewCustomDialog.dismiss();
-				}
-			});
-			instagram_btn.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View _view) {
-					user.setAction(Intent.ACTION_VIEW);
-					user.setData(Uri.parse("https://www.instagram.com/code_with_aakash_mishra?igsh=d2IwdXB0enR3cDJo"));
-					startActivity(user);
-					NewCustomDialog.dismiss();
-					
-				}
-			});
+
+			if (linear3 != null) {
+				linear3.setBackground(new GradientDrawable() { public GradientDrawable getIns(int a, int b, int c, int d) { this.setCornerRadius(a); this.setStroke(b, c); this.setColor(d); return this; } }.getIns((int)20, (int)3, 0xFFFFFFFF, 0xFF000000));
+			}
+			if (telegram_btn != null) {
+				telegram_btn.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View _view) {
+						try {
+							user.setAction(Intent.ACTION_VIEW);
+							user.setData(Uri.parse("https://t.me/amstudio_19"));
+							startActivity(user);
+						} catch (Exception ignored) {}
+					}
+				});
+			}
+			if (cancel != null) {
+				cancel.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View _view) {
+						NewCustomDialog.dismiss();
+					}
+				});
+			}
+			if (instagram_btn != null) {
+				instagram_btn.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View _view) {
+						try {
+							user.setAction(Intent.ACTION_VIEW);
+							user.setData(Uri.parse("https://www.instagram.com/code_with_aakash_mishra?igsh=d2IwdXB0enR3cDJo"));
+							startActivity(user);
+						} catch (Exception ignored) {}
+						NewCustomDialog.dismiss();
+					}
+				});
+			}
 			NewCustomDialog.setCancelable(true);
 			NewCustomDialog.show();
+			if (NewCustomDialog.getWindow() != null) {
+				NewCustomDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+			}
+		} catch (Exception e) {
+			Log.e("MainActivity", "Error in _NewCustomDialog", e);
 		}
 	}
 	

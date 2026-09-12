@@ -24,24 +24,30 @@ public class MusicManager {
     private Gson gson = new Gson();
 
     private MusicManager(Context context) {
-        sp = context.getSharedPreferences("music_data", Context.MODE_PRIVATE);
+        if (context != null) {
+            sp = context.getSharedPreferences("music_data", Context.MODE_PRIVATE);
+        }
     }
 
-    public static MusicManager getInstance(Context context) {
+    public static synchronized MusicManager getInstance(Context context) {
         if (instance == null) {
-            instance = new MusicManager(context);
+            instance = new MusicManager(context != null ? context.getApplicationContext() : null);
         }
         return instance;
     }
 
     // ➕ ADD SINGLE SONG
     public void addSong(HashMap<String, Object> map) {
+        if (map == null) return;
 
-        String id = map.containsKey("id") ?
-                map.get("id").toString() :
-                map.get("name").toString() + map.get("artist").toString();
+        Object idObj = map.get("id");
+        Object nameObj = map.get("name");
+        Object artistObj = map.get("artist");
 
-        if (!ids.contains(id)) {
+        String id = idObj != null ? idObj.toString() :
+                (nameObj != null ? nameObj.toString() : "") + (artistObj != null ? artistObj.toString() : "");
+
+        if (!id.isEmpty() && !ids.contains(id)) {
             ids.add(id);
             songList.add(map);
         }
@@ -49,17 +55,9 @@ public class MusicManager {
 
     // ➕ ADD MULTIPLE SONGS
     public void addSongs(ArrayList<HashMap<String, Object>> list) {
-
+        if (list == null) return;
         for (HashMap<String, Object> map : list) {
-
-            String id = map.containsKey("id") ?
-                    map.get("id").toString() :
-                    map.get("name").toString() + map.get("artist").toString();
-
-            if (!ids.contains(id)) {
-                ids.add(id);
-                songList.add(map);
-            }
+            addSong(map);
         }
     }
 
@@ -77,16 +75,16 @@ public class MusicManager {
 
     // 🔀 SET SHUFFLED COPY (BEST)
     public void setShuffledList(ArrayList<HashMap<String, Object>> list) {
-
+        if (list == null) return;
         ArrayList<HashMap<String, Object>> temp = new ArrayList<>(list);
-
         Collections.shuffle(temp);
-
         setList(temp);
     }
 
     // 📦 MERGE LISTS
-    public void mergeLists(ArrayList<HashMap<String, Object>>... lists) {
+    @SafeVarargs
+    public final void mergeLists(ArrayList<HashMap<String, Object>>... lists) {
+        if (lists == null) return;
         for (ArrayList<HashMap<String, Object>> list : lists) {
             addSongs(list);
         }
@@ -94,17 +92,17 @@ public class MusicManager {
 
     // 💾 SAVE SONGS (SHUFFLED ORDER SAVE)
     public void saveSongs() {
+        if (sp == null) return;
         String json = gson.toJson(songList);
         sp.edit().putString("songs_backup", json).apply();
     }
 
     // 📥 LOAD SONGS
     public void loadSongs() {
-
+        if (sp == null) return;
         String json = sp.getString("songs_backup", "");
 
-        if (!json.equals("")) {
-
+        if (json != null && !json.isEmpty()) {
             ArrayList<HashMap<String, Object>> savedList =
                     gson.fromJson(json,
                             new TypeToken<ArrayList<HashMap<String, Object>>>(){}.getType());
@@ -118,7 +116,9 @@ public class MusicManager {
     // 📥 SET BACKUP LIST
     public void setBackup(ArrayList<HashMap<String, Object>> list) {
         backupList.clear();
-        backupList.addAll(list);
+        if (list != null) {
+            backupList.addAll(list);
+        }
     }
 
     // 🔁 GET SONG LIST
@@ -131,6 +131,8 @@ public class MusicManager {
         songList.clear();
         backupList.clear();
         ids.clear();
-        sp.edit().clear().apply();
+        if (sp != null) {
+            sp.edit().clear().apply();
+        }
     }
 }

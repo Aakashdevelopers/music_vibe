@@ -3,15 +3,17 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/linear1"
-	android:layout_width="310dp"
+	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:layout_marginEnd="16dp"
-	android:layout_marginBottom="4dp"
-	android:background="@android:color/transparent"
+	android:background="?android:attr/selectableItemBackground"
+	android:clickable="true"
+	android:focusable="true"
 	android:gravity="center_vertical"
 	android:orientation="horizontal"
-	android:paddingVertical="4dp">
+	android:paddingHorizontal="16dp"
+	android:paddingVertical="8dp">
 
+	<!-- Album Art -->
 	<androidx.cardview.widget.CardView
 		android:id="@+id/cardview1"
 		android:layout_width="52dp"
@@ -30,6 +32,7 @@
 			android:src="@drawable/default_music_image" />
 	</androidx.cardview.widget.CardView>
 
+	<!-- Song Title & Artist -->
 	<LinearLayout
 		android:id="@+id/linear3"
 		android:layout_width="0dp"
@@ -48,7 +51,8 @@
 			android:focusable="false"
 			android:fontFamily="sans-serif-medium"
 			android:maxLines="1"
-			android:text="Song Name"
+			android:singleLine="true"
+			android:text="Song Title"
 			android:textColor="#FFFFFF"
 			android:textSize="14sp"
 			android:textStyle="bold" />
@@ -62,18 +66,32 @@
 			android:focusable="false"
 			android:fontFamily="sans-serif"
 			android:maxLines="1"
-			android:text="Artist • 1.2M plays"
+			android:singleLine="true"
+			android:text="Artist Name"
 			android:textColor="#9E9EB0"
 			android:textSize="12sp" />
 	</LinearLayout>
 
+	<!-- Download Badge -->
+	<ImageView
+		android:id="@+id/download_badge"
+		android:layout_width="20dp"
+		android:layout_height="20dp"
+		android:contentDescription="Downloaded"
+		android:padding="2dp"
+		android:scaleType="fitCenter"
+		android:src="@drawable/icon_arrow_downward_round"
+		app:tint="#4CAF50" />
+
+	<!-- More Options -->
 	<ImageView
 		android:id="@+id/more_options"
 		android:layout_width="24dp"
 		android:layout_height="24dp"
+		android:layout_marginStart="8dp"
 		android:contentDescription="More Options"
 		android:padding="2dp"
 		android:scaleType="fitCenter"
 		android:src="@drawable/icon_more_vert_round"
-		app:tint="#D0D0E0" />
+		app:tint="#A0A0B0" />
 </LinearLayout>

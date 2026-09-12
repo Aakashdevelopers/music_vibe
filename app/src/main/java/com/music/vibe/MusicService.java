@@ -19,14 +19,20 @@ import android.os.IBinder;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.os.Looper;
+import android.text.Html;
+import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.picasso.Picasso;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
+import java.util.concurrent.Executors;
 
 public class MusicService extends Service implements MediaPlayer.OnCompletionListener {
     public static MediaPlayer mediaPlayer;
@@ -37,6 +43,8 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     public static boolean isRepeatOne = false;
 
     public ArrayList<HashMap<String, Object>> songList;
+    private Bitmap cachedAlbumArt = null;
+    private String cachedArtUrl = "";
 
     private final IBinder binder = new LocalBinder();
     private ServiceCallback serviceCallback;
@@ -266,7 +274,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                     songList = new ArrayList<>(backupList);
 
                     // 🔀 RANDOM POSITION (IMPORTANT 🔥)
-                    currentPosition = new java.util.Random().nextInt(songList.size());
+                    currentPosition = new Random().nextInt(songList.size());
                 }
             }
 
@@ -278,7 +286,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         // 🔀 BACKUP MODE → RANDOM NEXT
         if (songList != null && !songList.isEmpty()) {
 
-            currentPosition = new java.util.Random().nextInt(songList.size());
+            currentPosition = new Random().nextInt(songList.size());
         }
     }
 
@@ -385,20 +393,15 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     }
 
     private void updateMetadata() {
-        if (mediaPlayer != null && songList != null && currentPosition < songList.size()) {
+        if (songList != null && currentPosition >= 0 && currentPosition < songList.size()) {
             HashMap<String, Object> currentSong = songList.get(currentPosition);
-            MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
-            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE,
-                    currentSong.get("name").toString());
-            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST,
-                    currentSong.get("artist").toString());
-            try {
-                metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION,
-                        mediaPlayer.getDuration());
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
+            String photoPath = currentSong.get("photopath") != null ? currentSong.get("photopath").toString() : "";
+            if (photoPath.equals(cachedArtUrl) && cachedAlbumArt != null) {
+                updateNotificationAndMediaSession(cachedAlbumArt);
+            } else {
+                updateNotificationAndMediaSession(cachedAlbumArt);
+                fetchAlbumArtAsync(photoPath);
             }
-            mediaSession.setMetadata(metadataBuilder.build());
         }
     }
 
@@ -408,9 +411,77 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         }
 
         HashMap<String, Object> currentSong = songList.get(currentPosition);
-        String songName = currentSong.get("name").toString();
-        String artist = currentSong.get("artist").toString();
-        Bitmap albumArt = getAlbumArt(currentSong.get("photopath").toString());
+        String photoPath = currentSong.get("photopath") != null ? currentSong.get("photopath").toString() : "";
+
+        if (photoPath.equals(cachedArtUrl) && cachedAlbumArt != null) {
+            updateNotificationAndMediaSession(cachedAlbumArt);
+        } else {
+            updateNotificationAndMediaSession(cachedAlbumArt);
+            fetchAlbumArtAsync(photoPath);
+        }
+    }
+
+    private void fetchAlbumArtAsync(String path) {
+        if (path == null || path.isEmpty()) return;
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+            Bitmap bitmap = null;
+            try {
+                if (path.startsWith("http")) {
+                    bitmap = Picasso.get()
+                            .load(path)
+                            .config(Bitmap.Config.ARGB_8888)
+                            .get();
+                } else if (path.startsWith("content://")) {
+                    Uri uri = Uri.parse(path);
+                    InputStream inputStream = getContentResolver().openInputStream(uri);
+                    bitmap = BitmapFactory.decodeStream(inputStream);
+                } else {
+                    bitmap = BitmapFactory.decodeFile(path);
+                }
+            } catch (Exception e) {
+                Log.e("MusicService", "Error loading album art for notification", e);
+            }
+
+            final Bitmap finalBitmap = bitmap;
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (finalBitmap != null) {
+                    cachedAlbumArt = finalBitmap;
+                    cachedArtUrl = path;
+                } else {
+                    cachedAlbumArt = BitmapFactory.decodeResource(getResources(), R.drawable.default_music_image);
+                    cachedArtUrl = path;
+                }
+                updateNotificationAndMediaSession(cachedAlbumArt);
+            });
+        });
+    }
+
+    private void updateNotificationAndMediaSession(Bitmap albumArt) {
+        if (songList == null || currentPosition < 0 || currentPosition >= songList.size()) {
+            return;
+        }
+
+        HashMap<String, Object> currentSong = songList.get(currentPosition);
+        String songName = cleanText(currentSong.get("name") != null ? currentSong.get("name").toString() : "");
+        String artist = cleanText(currentSong.get("artist") != null ? currentSong.get("artist").toString() : "");
+
+        Bitmap art = albumArt != null ? albumArt : BitmapFactory.decodeResource(getResources(), R.drawable.default_music_image);
+
+        try {
+            MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
+            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, songName);
+            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist);
+            metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, art);
+            metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, art);
+
+            if (mediaPlayer != null && isPrepared) {
+                metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, mediaPlayer.getDuration());
+            }
+            mediaSession.setMetadata(metadataBuilder.build());
+        } catch (Exception e) {
+            Log.e("MusicService", "Error updating MediaMetadataCompat", e);
+        }
 
         Intent playPauseIntent = new Intent(this, MusicService.class);
         playPauseIntent.setAction(isPlaying ? "PAUSE" : "PLAY");
@@ -419,13 +490,13 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
         NotificationCompat.Action playPauseAction = new NotificationCompat.Action(
                 isPlaying ? R.drawable.ic_pause : R.drawable.ic_play,
-                isPlaying ? "Pausar" : "Reproducir",
+                isPlaying ? "Pause" : "Play",
                 playPausePending
         );
 
         NotificationCompat.Action nextAction = new NotificationCompat.Action(
                 R.drawable.ic_next,
-                "Siguiente",
+                "Next",
                 PendingIntent.getService(this, 1,
                         new Intent(this, MusicService.class).setAction("NEXT"),
                         PendingIntent.FLAG_IMMUTABLE)
@@ -433,7 +504,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
         NotificationCompat.Action prevAction = new NotificationCompat.Action(
                 R.drawable.ic_previous,
-                "Anterior",
+                "Previous",
                 PendingIntent.getService(this, 2,
                         new Intent(this, MusicService.class).setAction("PREV"),
                         PendingIntent.FLAG_IMMUTABLE)
@@ -441,23 +512,21 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
         NotificationCompat.Action stopAction = new NotificationCompat.Action(
                 R.drawable.ic_stop,
-                "Detener",
+                "Stop",
                 PendingIntent.getService(this, 3,
                         new Intent(this, MusicService.class).setAction("STOP"),
                         PendingIntent.FLAG_IMMUTABLE)
         );
 
         try {
-            int progress = mediaPlayer != null && isPrepared ?
-                    mediaPlayer.getCurrentPosition() : 0;
-            int duration = mediaPlayer != null && isPrepared ?
-                    mediaPlayer.getDuration() : 0;
+            int progress = mediaPlayer != null && isPrepared ? mediaPlayer.getCurrentPosition() : 0;
+            int duration = mediaPlayer != null && isPrepared ? mediaPlayer.getDuration() : 0;
 
             Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                     .setSmallIcon(R.drawable.zenmusic)
-                    .setContentTitle(songName)
+            .setContentTitle(songName)
                     .setContentText(artist)
-                    .setLargeIcon(albumArt)
+                    .setLargeIcon(art)
                     .setProgress(duration, progress, false)
                     .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                             .setMediaSession(mediaSession.getSessionToken())
@@ -472,48 +541,14 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
             startForeground(1, notification);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("MusicService", "Error showing notification", e);
         }
     }
 
-    private Bitmap getAlbumArt(String path) {
-    try {
-
-        if (path.startsWith("http")) {
-
-            java.net.URL url = new java.net.URL(path);
-            java.net.HttpURLConnection connection =
-                    (java.net.HttpURLConnection) url.openConnection();
-
-            connection.setDoInput(true);
-            connection.connect();
-
-            InputStream input = connection.getInputStream();
-            Bitmap bitmap = BitmapFactory.decodeStream(input);
-
-            return Bitmap.createScaledBitmap(bitmap, 512, 512, true);
-        }
-
-        else if (path.startsWith("content://")) {
-
-            Uri uri = Uri.parse(path);
-            InputStream inputStream = getContentResolver().openInputStream(uri);
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-            return bitmap;
-        }
-
-        else {
-
-            Bitmap bitmap = BitmapFactory.decodeFile(path);
-            return bitmap;
-        }
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        return BitmapFactory.decodeResource(getResources(), R.drawable.zenloading_error);
+    private String cleanText(String text) {
+        if (text == null) return "";
+        return Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY).toString();
     }
-}
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(

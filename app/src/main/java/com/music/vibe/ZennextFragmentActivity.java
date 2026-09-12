@@ -86,11 +86,10 @@ public class ZennextFragmentActivity extends BottomSheetDialogFragment{
 	public View onCreateView(@NonNull LayoutInflater _inflater, @Nullable ViewGroup _container, @Nullable Bundle _savedInstanceState) {
 		View _view = _inflater.inflate(R.layout.zennext_fragment, _container, false);
 		initialize(_savedInstanceState, _view);
-		FirebaseApp.initializeApp(getContext());
 		initializeLogic();
 		return _view;
 	}
-	
+
 	private void initialize(Bundle _savedInstanceState, View _view) {
 		view = _view.findViewById(R.id.view);
 		Ln1 = _view.findViewById(R.id.Ln1);
@@ -98,14 +97,18 @@ public class ZennextFragmentActivity extends BottomSheetDialogFragment{
 		linear3 = _view.findViewById(R.id.linear3);
 		recyclerview1 = _view.findViewById(R.id.recyclerview1);
 		textview1 = _view.findViewById(R.id.textview1);
-		songZEN = getContext().getSharedPreferences("songZEN", Activity.MODE_PRIVATE);
-		songZenNext = getContext().getSharedPreferences("songZenNext", Activity.MODE_PRIVATE);
+		Context ctx = getContext();
+		if (ctx != null) {
+			songZEN = ctx.getSharedPreferences("songZEN", Context.MODE_PRIVATE);
+			songZenNext = ctx.getSharedPreferences("songZenNext", Context.MODE_PRIVATE);
+		}
 	}
-	
+
 	private void initializeLogic() {
-		textview1.setTypeface(Typeface.createFromAsset(getContext().getAssets(),"fonts/zenlt.ttf"), 1);
-		
-		
+		Context ctx = getContext();
+		if (ctx != null && textview1 != null) {
+			textview1.setTypeface(Typeface.createFromAsset(ctx.getAssets(),"fonts/zenlt.ttf"), Typeface.BOLD);
+		}
 	}
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -164,7 +167,7 @@ public class ZennextFragmentActivity extends BottomSheetDialogFragment{
 			
 		}
 	}
-	public class Recyclerview1Adapter extends RecyclerView.Adapter<Recyclerview1Adapter.ViewHolder> {
+	public class Recyclerview1Adapter extends Adapter<Recyclerview1Adapter.ViewHolder> {
 		
 		ArrayList<HashMap<String, Object>> _data;
 		
@@ -186,7 +189,7 @@ public class ZennextFragmentActivity extends BottomSheetDialogFragment{
 			View _view = _holder.itemView;
 			
 			final LinearLayout linear1 = _view.findViewById(R.id.linear1);
-			final androidx.cardview.widget.CardView mAlbumCard = _view.findViewById(R.id.mAlbumCard);
+			final CardView mAlbumCard = _view.findViewById(R.id.mAlbumCard);
 			final LinearLayout mMusicInfoMiddle = _view.findViewById(R.id.mMusicInfoMiddle);
 			final LinearLayout linear5 = _view.findViewById(R.id.linear5);
 			final ImageView ArtZen = _view.findViewById(R.id.ArtZen);
