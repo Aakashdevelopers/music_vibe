@@ -223,14 +223,6 @@ public class ZenhomeFragmentActivity extends Fragment {
 				QuickPicksMusicsLayoutShimmer.setVisibility(View.GONE);
 				recyclerview1.setVisibility(View.VISIBLE);
 
-				if (QuickPicksShimmer != null) QuickPicksShimmer.setVisibility(View.GONE);
-				if (recyclerviewQuickPicks != null) {
-					recyclerviewQuickPicks.setAdapter(new QuickPicksAdapter(stori));
-					recyclerviewQuickPicks.setLayoutManager(new GridLayoutManager(ctx, 2));
-					recyclerviewQuickPicks.setNestedScrollingEnabled(false);
-					recyclerviewQuickPicks.setVisibility(View.VISIBLE);
-				}
-
 				MusicManager manager = MusicManager.getInstance(ctx);
 				manager.addSongs(stori);
 			}
@@ -522,7 +514,7 @@ public class ZenhomeFragmentActivity extends Fragment {
 	}
 
 	private void setupChipClickListeners() {
-		if (chipTrending != null) chipTrending.setOnClickListener(v -> selectChip(chipTrending, "bollywood song"));
+		if (chipTrending != null) chipTrending.setOnClickListener(v -> selectChip(chipTrending, "trending bollywood song"));
 		if (chipEnergise != null) chipEnergise.setOnClickListener(v -> selectChip(chipEnergise, "energise workout songs"));
 		if (chipFeelGood != null) chipFeelGood.setOnClickListener(v -> selectChip(chipFeelGood, "feel good songs"));
 		if (chipRelax != null) chipRelax.setOnClickListener(v -> selectChip(chipRelax, "relax lofi music"));
@@ -612,9 +604,14 @@ public class ZenhomeFragmentActivity extends Fragment {
 		headers.put("Authorization", "Bearer sk-paxsenix-h-IpQ7TD4Z5s8LS9cOLis9tVkz_AfLWh3vlbmFgqECyr1xYZ");
 		headers.put("Content-Type", "application/json");
 
-		// Section 1: Quick Picks & Top Hindi Hits
+		// Quick Picks: Trending Bollywood Songs
+		if (chipTrending != null) {
+			selectChip(chipTrending, "bollywood song");
+		}
+
+		// Section 1: 90s Hindi Songs
 		storys.setHeaders(headers);
-		storys.startRequestNetwork(RequestNetworkController.GET, "https://api.paxsenix.org/jiosaavn/search?q=latest+hindi+songs", "r", _storys_request_listener);
+		storys.startRequestNetwork(RequestNetworkController.GET, "https://api.paxsenix.org/jiosaavn/search?q=90s+hindi+songs", "r", _storys_request_listener);
 
 		// Section 2: Bhojpuri Hits
 		ts.setHeaders(headers);
