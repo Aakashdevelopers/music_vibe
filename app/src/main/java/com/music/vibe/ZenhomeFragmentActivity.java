@@ -199,9 +199,8 @@ public class ZenhomeFragmentActivity extends Fragment {
 
 						String songurl = "";
 						JSONArray downloadArray = item.optJSONArray("downloadUrl");
-						if (downloadArray != null && downloadArray.length() > 4) {
-							JSONObject audioObj = downloadArray.getJSONObject(4);
-							songurl = audioObj.optString("url", "");
+						if (downloadArray != null) {
+							songurl = AudioQualityHelper.selectBestAudioUrl(downloadArray, getContext());
 						}
 
 						if (songurl.equals("")) continue;
@@ -276,9 +275,8 @@ public class ZenhomeFragmentActivity extends Fragment {
 
 						String songurl = "";
 						JSONArray downloadArray = item.optJSONArray("downloadUrl");
-						if (downloadArray != null && downloadArray.length() > 4) {
-							JSONObject audioObj = downloadArray.getJSONObject(4);
-							songurl = audioObj.optString("url", "");
+						if (downloadArray != null) {
+							songurl = AudioQualityHelper.selectBestAudioUrl(downloadArray, getContext());
 						}
 
 						if (songurl.equals("")) continue;
@@ -349,9 +347,8 @@ public class ZenhomeFragmentActivity extends Fragment {
 
 						String songurl = "";
 						JSONArray downloadArray = item.optJSONArray("downloadUrl");
-						if (downloadArray != null && downloadArray.length() > 4) {
-							JSONObject audioObj = downloadArray.getJSONObject(4);
-							songurl = audioObj.optString("url", "");
+						if (downloadArray != null) {
+							songurl = AudioQualityHelper.selectBestAudioUrl(downloadArray, getContext());
 						}
 
 						if (songurl.equals("")) continue;
@@ -419,9 +416,8 @@ public class ZenhomeFragmentActivity extends Fragment {
 
 						String songurl = "";
 						JSONArray downloadArray = item.optJSONArray("downloadUrl");
-						if (downloadArray != null && downloadArray.length() > 4) {
-							JSONObject audioObj = downloadArray.getJSONObject(4);
-							songurl = audioObj.optString("url", "");
+						if (downloadArray != null) {
+							songurl = AudioQualityHelper.selectBestAudioUrl(downloadArray, getContext());
 						}
 
 						if (songurl.equals("")) continue;
@@ -489,9 +485,8 @@ public class ZenhomeFragmentActivity extends Fragment {
 
 						String songurl = "";
 						JSONArray downloadArray = item.optJSONArray("downloadUrl");
-						if (downloadArray != null && downloadArray.length() > 4) {
-							JSONObject audioObj = downloadArray.getJSONObject(4);
-							songurl = audioObj.optString("url", "");
+						if (downloadArray != null) {
+							songurl = AudioQualityHelper.selectBestAudioUrl(downloadArray, getContext());
 						}
 
 						if (songurl.equals("")) continue;

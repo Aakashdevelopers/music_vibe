@@ -56,10 +56,13 @@
 
 				<!-- Audio Quality Option -->
 				<LinearLayout
+					android:id="@+id/btnAudioQuality"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:layout_marginBottom="12dp"
 					android:background="@drawable/bg_chip_glassy_unselected"
+					android:clickable="true"
+					android:focusable="true"
 					android:gravity="center_vertical"
 					android:orientation="horizontal"
 					android:padding="16dp">
@@ -87,21 +90,26 @@
 							android:textStyle="bold" />
 
 						<TextView
+							android:id="@+id/tvQualitySubtitle"
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
 							android:layout_marginTop="2dp"
-							android:text="High Quality (320 kbps)"
+							android:text="Auto (Network Speed Adaptive)"
 							android:textColor="#A0A0B0"
 							android:textSize="12sp" />
 					</LinearLayout>
 				</LinearLayout>
 
 				<!-- Equalizer Option -->
+
+				<!-- Check for Updates / App Version Option -->
 				<LinearLayout
+					android:id="@+id/btnCheckUpdate"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:layout_marginBottom="12dp"
 					android:background="@drawable/bg_chip_glassy_unselected"
+					android:clickable="true"
+					android:focusable="true"
 					android:gravity="center_vertical"
 					android:orientation="horizontal"
 					android:padding="16dp">
@@ -109,8 +117,8 @@
 					<ImageView
 						android:layout_width="24dp"
 						android:layout_height="24dp"
-						android:contentDescription="Equalizer"
-						android:src="@drawable/icon_av_timer_round"
+						android:contentDescription="Check for Updates"
+						android:src="@drawable/icon_arrow_downward_round"
 						app:tint="#A78BFA" />
 
 					<LinearLayout
@@ -123,57 +131,17 @@
 						<TextView
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:text="Audio Equalizer"
+							android:text="Check for Updates"
 							android:textColor="#FFFFFF"
 							android:textSize="15sp"
 							android:textStyle="bold" />
 
 						<TextView
+							android:id="@+id/tvVersionSubtitle"
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
 							android:layout_marginTop="2dp"
-							android:text="System sound effects"
-							android:textColor="#A0A0B0"
-							android:textSize="12sp" />
-					</LinearLayout>
-				</LinearLayout>
-
-				<!-- App Version Option -->
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:background="@drawable/bg_chip_glassy_unselected"
-					android:gravity="center_vertical"
-					android:orientation="horizontal"
-					android:padding="16dp">
-
-					<ImageView
-						android:layout_width="24dp"
-						android:layout_height="24dp"
-						android:contentDescription="App Version"
-						android:src="@drawable/icon_settings_round"
-						app:tint="#A78BFA" />
-
-					<LinearLayout
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:layout_marginStart="16dp"
-						android:layout_weight="1"
-						android:orientation="vertical">
-
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:text="Music Vibe Version"
-							android:textColor="#FFFFFF"
-							android:textSize="15sp"
-							android:textStyle="bold" />
-
-						<TextView
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:layout_marginTop="2dp"
-							android:text="Version 1.3"
+							android:text="Version 1.4 • Tap to check GitHub"
 							android:textColor="#A0A0B0"
 							android:textSize="12sp" />
 					</LinearLayout>

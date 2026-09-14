@@ -7,176 +7,182 @@
 	android:background="#000000"
 	android:orientation="vertical">
 
-	<LinearLayout
-		android:id="@+id/linear7"
+	<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+		android:id="@+id/swipeRefreshLayout"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:background="#000000"
-		android:orientation="vertical"
-		android:paddingBottom="120dp">
+		android:layout_height="match_parent">
 
-		<!-- Header Section -->
 		<LinearLayout
+			android:id="@+id/linear7"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
+			android:layout_height="match_parent"
+			android:background="#000000"
 			android:orientation="vertical"
-			android:paddingHorizontal="16dp"
-			android:paddingTop="20dp"
-			android:paddingBottom="8dp">
+			android:paddingBottom="120dp">
 
-			<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:fontFamily="sans-serif-medium"
-				android:text="Downloads"
-				android:textColor="#FFFFFF"
-				android:textSize="24sp"
-				android:textStyle="bold" />
-
-			<TextView
-				android:id="@+id/tvSongCount"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="2dp"
-				android:fontFamily="sans-serif"
-				android:text="Offline songs on your device"
-				android:textColor="#A0A0B0"
-				android:textSize="13sp" />
-		</LinearLayout>
-
-		<!-- Action Buttons Bar (Play All / Shuffle) -->
-		<LinearLayout
-			android:id="@+id/actionButtonsLayout"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal"
-			android:paddingHorizontal="16dp"
-			android:paddingVertical="8dp"
-			android:visibility="gone">
-
-			<!-- Play All Button -->
+			<!-- Header Section -->
 			<LinearLayout
-				android:id="@+id/btnPlayAll"
-				android:layout_width="wrap_content"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginEnd="10dp"
-				android:background="@drawable/bg_chip_glassy_selected"
-				android:clickable="true"
-				android:focusable="true"
-				android:gravity="center_vertical"
-				android:orientation="horizontal"
+				android:orientation="vertical"
 				android:paddingHorizontal="16dp"
-				android:paddingVertical="8dp">
-
-				<ImageView
-					android:layout_width="18dp"
-					android:layout_height="18dp"
-					android:layout_marginEnd="6dp"
-					android:contentDescription="Play All"
-					android:src="@drawable/icon_play_arrow_round"
-					app:tint="#FFFFFF" />
+				android:paddingTop="20dp"
+				android:paddingBottom="8dp">
 
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:fontFamily="sans-serif-medium"
-					android:text="Play all"
+					android:text="Downloads"
 					android:textColor="#FFFFFF"
-					android:textSize="13sp"
+					android:textSize="24sp"
 					android:textStyle="bold" />
-			</LinearLayout>
-
-			<!-- Shuffle Button -->
-			<LinearLayout
-				android:id="@+id/btnShuffle"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:background="@drawable/bg_chip_glassy_unselected"
-				android:clickable="true"
-				android:focusable="true"
-				android:gravity="center_vertical"
-				android:orientation="horizontal"
-				android:paddingHorizontal="16dp"
-				android:paddingVertical="8dp">
-
-				<ImageView
-					android:layout_width="18dp"
-					android:layout_height="18dp"
-					android:layout_marginEnd="6dp"
-					android:contentDescription="Shuffle"
-					android:src="@drawable/icon_repeat_round"
-					app:tint="#E0E0F0" />
 
 				<TextView
+					android:id="@+id/tvSongCount"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:fontFamily="sans-serif-medium"
-					android:text="Shuffle"
-					android:textColor="#E0E0F0"
+					android:layout_marginTop="2dp"
+					android:fontFamily="sans-serif"
+					android:text="Offline songs on your device"
+					android:textColor="#A0A0B0"
 					android:textSize="13sp" />
 			</LinearLayout>
-		</LinearLayout>
 
-		<LinearLayout
-			android:id="@+id/linear8"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal"
-			android:visibility="gone" />
-
-		<!-- Offline Songs RecyclerView -->
-		<androidx.recyclerview.widget.RecyclerView
-			android:id="@+id/recyclerview1"
-			android:layout_width="match_parent"
-			android:layout_height="0dp"
-			android:layout_weight="1"
-			android:clipToPadding="false"
-			tools:listitem="@layout/item_download_song" />
-
-		<!-- Empty State Layout -->
-		<LinearLayout
-			android:id="@+id/emptyStateLayout"
-			android:layout_width="match_parent"
-			android:layout_height="0dp"
-			android:layout_weight="1"
-			android:gravity="center"
-			android:orientation="vertical"
-			android:padding="32dp"
-			android:visibility="gone">
-
-			<ImageView
-				android:layout_width="72dp"
-				android:layout_height="72dp"
-				android:contentDescription="No Downloads"
-				android:src="@drawable/icon_library_music_round"
-				app:tint="#35354A" />
-
-			<TextView
-				android:layout_width="wrap_content"
+			<!-- Action Buttons Bar (Play All / Shuffle) -->
+			<LinearLayout
+				android:id="@+id/actionButtonsLayout"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="16dp"
-				android:fontFamily="sans-serif-medium"
-				android:text="No Downloaded Songs"
-				android:textColor="#FFFFFF"
-				android:textSize="18sp"
-				android:textStyle="bold" />
+				android:orientation="horizontal"
+				android:paddingHorizontal="16dp"
+				android:paddingVertical="8dp"
+				android:visibility="gone">
 
-			<TextView
-				android:layout_width="wrap_content"
+				<!-- Play All Button -->
+				<LinearLayout
+					android:id="@+id/btnPlayAll"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="10dp"
+					android:background="@drawable/bg_chip_glassy_selected"
+					android:clickable="true"
+					android:focusable="true"
+					android:gravity="center_vertical"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp"
+					android:paddingVertical="8dp">
+
+					<ImageView
+						android:layout_width="18dp"
+						android:layout_height="18dp"
+						android:layout_marginEnd="6dp"
+						android:contentDescription="Play All"
+						android:src="@drawable/icon_play_arrow_round"
+						app:tint="#FFFFFF" />
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:fontFamily="sans-serif-medium"
+						android:text="Play all"
+						android:textColor="#FFFFFF"
+						android:textSize="13sp"
+						android:textStyle="bold" />
+				</LinearLayout>
+
+				<!-- Shuffle Button -->
+				<LinearLayout
+					android:id="@+id/btnShuffle"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:background="@drawable/bg_chip_glassy_unselected"
+					android:clickable="true"
+					android:focusable="true"
+					android:gravity="center_vertical"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp"
+					android:paddingVertical="8dp">
+
+					<ImageView
+						android:layout_width="18dp"
+						android:layout_height="18dp"
+						android:layout_marginEnd="6dp"
+						android:contentDescription="Shuffle"
+						android:src="@drawable/icon_repeat_round"
+						app:tint="#E0E0F0" />
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:fontFamily="sans-serif-medium"
+						android:text="Shuffle"
+						android:textColor="#E0E0F0"
+						android:textSize="13sp" />
+				</LinearLayout>
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/linear8"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="6dp"
-				android:fontFamily="sans-serif"
+				android:orientation="horizontal"
+				android:visibility="gone" />
+
+			<!-- Offline Songs RecyclerView -->
+			<androidx.recyclerview.widget.RecyclerView
+				android:id="@+id/recyclerview1"
+				android:layout_width="match_parent"
+				android:layout_height="0dp"
+				android:layout_weight="1"
+				android:clipToPadding="false"
+				tools:listitem="@layout/item_download_song" />
+
+			<!-- Empty State Layout -->
+			<LinearLayout
+				android:id="@+id/emptyStateLayout"
+				android:layout_width="match_parent"
+				android:layout_height="0dp"
+				android:layout_weight="1"
 				android:gravity="center"
-				android:text="Songs you download will show up here for offline playback."
-				android:textColor="#808098"
-				android:textSize="13sp" />
-		</LinearLayout>
+				android:orientation="vertical"
+				android:padding="32dp"
+				android:visibility="gone">
 
-		<LinearLayout
-			android:id="@+id/linear9"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal"
-			android:visibility="gone" />
-	</LinearLayout>
+				<ImageView
+					android:layout_width="72dp"
+					android:layout_height="72dp"
+					android:contentDescription="No Downloads"
+					android:src="@drawable/icon_library_music_round"
+					app:tint="#35354A" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="16dp"
+					android:fontFamily="sans-serif-medium"
+					android:text="No Downloaded Songs"
+					android:textColor="#FFFFFF"
+					android:textSize="18sp"
+					android:textStyle="bold" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="6dp"
+					android:fontFamily="sans-serif"
+					android:gravity="center"
+					android:text="Songs you download will show up here for offline playback."
+					android:textColor="#808098"
+					android:textSize="13sp" />
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/linear9"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:visibility="gone" />
+		</LinearLayout>
+	</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>

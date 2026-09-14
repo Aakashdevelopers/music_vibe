@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="@drawable/bg_bottom_sheet_dialog"
+	android:orientation="vertical"
+	android:paddingHorizontal="20dp"
+	android:paddingTop="12dp"
+	android:paddingBottom="24dp">
+
+	<!-- Top Drag Handle -->
+	<View
+		android:layout_width="36dp"
+		android:layout_height="4dp"
+		android:layout_gravity="center_horizontal"
+		android:layout_marginBottom="16dp"
+		android:background="@drawable/bg_round"
+		android:backgroundTint="#40405A" />
+
+	<!-- Header -->
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_vertical"
+		android:orientation="horizontal"
+		android:layout_marginBottom="20dp">
+
+		<ImageView
+			android:layout_width="28dp"
+			android:layout_height="28dp"
+			android:src="@drawable/icon_music_note_round"
+			app:tint="#A78BFA"
+			android:contentDescription="Audio Quality" />
+
+		<LinearLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:layout_marginStart="12dp"
+			android:orientation="vertical">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:fontFamily="sans-serif-medium"
+				android:text="Audio Streaming Quality"
+				android:textColor="#FFFFFF"
+				android:textSize="18sp"
+				android:textStyle="bold" />
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="2dp"
+				android:fontFamily="sans-serif"
+				android:text="Select preferred streaming bitrate"
+				android:textColor="#A0A0B0"
+				android:textSize="12sp" />
+		</LinearLayout>
+	</LinearLayout>
+
+	<!-- Options Container -->
+	<LinearLayout
+		android:id="@+id/optionsContainer"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical" />
+
+</LinearLayout>

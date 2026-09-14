@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="@drawable/bg_bottom_sheet_dialog"
+	android:orientation="vertical"
+	android:paddingHorizontal="20dp"
+	android:paddingTop="12dp"
+	android:paddingBottom="24dp">
+
+	<!-- Top Drag Handle -->
+	<View
+		android:layout_width="36dp"
+		android:layout_height="4dp"
+		android:layout_gravity="center_horizontal"
+		android:layout_marginBottom="16dp"
+		android:background="@drawable/bg_round"
+		android:backgroundTint="#40405A" />
+
+	<!-- Header -->
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_vertical"
+		android:orientation="horizontal"
+		android:layout_marginBottom="16dp">
+
+		<ImageView
+			android:layout_width="32dp"
+			android:layout_height="32dp"
+			android:src="@drawable/icon_arrow_downward_round"
+			app:tint="#A78BFA"
+			android:contentDescription="Update Available" />
+
+		<LinearLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:layout_marginStart="12dp"
+			android:orientation="vertical">
+
+			<TextView
+				android:id="@+id/tvUpdateTitle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:fontFamily="sans-serif-medium"
+				android:text="New Update Available!"
+				android:textColor="#FFFFFF"
+				android:textSize="18sp"
+				android:textStyle="bold" />
+
+			<TextView
+				android:id="@+id/tvUpdateVersion"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="2dp"
+				android:fontFamily="sans-serif"
+				android:text="Version v1.5 is now available"
+				android:textColor="#A0A0B0"
+				android:textSize="13sp" />
+		</LinearLayout>
+	</LinearLayout>
+
+	<!-- Release Notes Card -->
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="20dp"
+		android:background="@drawable/bg_chip_glassy_unselected"
+		android:orientation="vertical"
+		android:padding="16dp">
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:fontFamily="sans-serif-medium"
+			android:text="What's New:"
+			android:textColor="#A78BFA"
+			android:textSize="13sp"
+			android:textStyle="bold" />
+
+		<androidx.core.widget.NestedScrollView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:maxHeight="160dp"
+			android:layout_marginTop="8dp">
+
+			<TextView
+				android:id="@+id/tvChangelog"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:fontFamily="sans-serif"
+				android:lineSpacingExtra="3dp"
+				android:text="Bug fixes and performance improvements."
+				android:textColor="#D0D0E0"
+				android:textSize="13sp" />
+		</androidx.core.widget.NestedScrollView>
+	</LinearLayout>
+
+	<!-- Buttons -->
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:gravity="center">
+
+		<TextView
+			android:id="@+id/btnDownloadUpdate"
+			android:layout_width="match_parent"
+			android:layout_height="48dp"
+			android:background="@drawable/button_glass"
+			android:clickable="true"
+			android:focusable="true"
+			android:gravity="center"
+			android:text="Download &amp; Install Update"
+			android:textColor="#FFFFFF"
+			android:textSize="15sp"
+			android:textStyle="bold" />
+
+		<TextView
+			android:id="@+id/btnDismissUpdate"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="12dp"
+			android:clickable="true"
+			android:focusable="true"
+			android:padding="8dp"
+			android:text="Maybe Later"
+			android:textColor="#A0A0B0"
+			android:textSize="13sp" />
+	</LinearLayout>
+
+</LinearLayout>

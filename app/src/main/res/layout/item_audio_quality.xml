@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/itemRoot"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_marginBottom="10dp"
+	android:background="@drawable/bg_quality_item_unselected"
+	android:clickable="true"
+	android:focusable="true"
+	android:gravity="center_vertical"
+	android:orientation="horizontal"
+	android:paddingHorizontal="16dp"
+	android:paddingVertical="12dp">
+
+	<!-- Option Icon / Badge -->
+	<ImageView
+		android:id="@+id/imgOptionBadge"
+		android:layout_width="24dp"
+		android:layout_height="24dp"
+		android:contentDescription="Quality"
+		android:src="@drawable/icon_music_note_round"
+		app:tint="#A78BFA" />
+
+	<!-- Text Content -->
+	<LinearLayout
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="14dp"
+		android:layout_weight="1"
+		android:orientation="vertical">
+
+		<TextView
+			android:id="@+id/tvOptionTitle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:fontFamily="sans-serif-medium"
+			android:text="High Quality"
+			android:textColor="#FFFFFF"
+			android:textSize="15sp"
+			android:textStyle="bold" />
+
+		<TextView
+			android:id="@+id/tvOptionSubtitle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="2dp"
+			android:fontFamily="sans-serif"
+			android:text="320 kbps • Best audio fidelity"
+			android:textColor="#A0A0B0"
+			android:textSize="12sp" />
+	</LinearLayout>
+
+	<!-- Selection Indicator -->
+	<ImageView
+		android:id="@+id/imgCheck"
+		android:layout_width="22dp"
+		android:layout_height="22dp"
+		android:contentDescription="Selected"
+		android:src="@drawable/ic_check_circle"
+		app:tint="#A78BFA"
+		android:visibility="gone" />
+</LinearLayout>

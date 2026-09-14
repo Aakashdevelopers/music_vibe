@@ -10,23 +10,29 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.os.Looper;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -316,19 +322,45 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
             HashMap<String, Object> currentSong = songList.get(currentPosition);
             saveRecentSong(currentSong);
 
-            if (mediaPlayer != null) {
+            // ⚡ 1. INSTANT UI FEEDBACK: Change song info on tap immediately
+            isPrepared = false;
+            isPlaying = false;
+            if (serviceCallback != null) {
+                serviceCallback.onSongChanged(currentSong);
+                serviceCallback.onPlaybackStateChanged(false);
+            }
+            updateMetadata();
+            showNotification();
+
+            // ⚡ 2. REUSE MEDIAPLAYER: Avoid costly release() & new MediaPlayer() creation
+            if (mediaPlayer == null) {
+                mediaPlayer = new MediaPlayer();
+            } else {
                 try {
                     if (mediaPlayer.isPlaying()) {
                         mediaPlayer.stop();
                     }
                     mediaPlayer.reset();
-                    mediaPlayer.release();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    try {
+                        mediaPlayer.release();
+                    } catch (Exception ignored) {}
+                    mediaPlayer = new MediaPlayer();
                 }
             }
 
-            mediaPlayer = new MediaPlayer();
+            // ⚡ 3. AUDIO ATTRIBUTES & WAKE LOCK: Fast hardware audio decoding
+            mediaPlayer.setAudioAttributes(
+                    new AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .build()
+            );
+
+            try {
+                mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+            } catch (Exception ignored) {}
+
             mediaPlayer.setOnCompletionListener(this);
             mediaPlayer.setOnErrorListener((mp, what, extra) -> {
                 mediaPlayer.setLooping(isRepeatOne);
@@ -336,24 +368,44 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 return true;
             });
 
-            String dataSource = currentSong.get("data").toString();
-            mediaPlayer.setDataSource(dataSource);
-            isPrepared = false;
+            // ⚡ 4. FAST FILEDESCRIPTOR DATA SOURCE FOR LOCAL FILES
+            String dataSource = currentSong.get("data") != null ? currentSong.get("data").toString() : "";
+            if (TextUtils.isEmpty(dataSource) && currentSong.get("path") != null) {
+                dataSource = currentSong.get("path").toString();
+            }
+
+            if (dataSource.startsWith("/")) {
+                File file = new File(dataSource);
+                if (file.exists()) {
+                    try (FileInputStream fis = new FileInputStream(file)) {
+                        mediaPlayer.setDataSource(fis.getFD());
+                    }
+                } else {
+                    mediaPlayer.setDataSource(dataSource);
+                }
+            } else if (dataSource.startsWith("file://")) {
+                String cleanPath = Uri.parse(dataSource).getPath();
+                if (cleanPath != null && new File(cleanPath).exists()) {
+                    try (FileInputStream fis = new FileInputStream(cleanPath)) {
+                        mediaPlayer.setDataSource(fis.getFD());
+                    }
+                } else {
+                    mediaPlayer.setDataSource(dataSource);
+                }
+            } else {
+                mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(dataSource));
+            }
 
             mediaPlayer.setOnPreparedListener(mp -> {
                 isPrepared = true;
-                updateMetadata();
-                showNotification();
                 playMusic();
-                if (serviceCallback != null) {
-                    serviceCallback.onSongChanged(currentSong);
-                }
+                updatePlaybackState();
             });
 
             mediaPlayer.prepareAsync();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("MusicService", "Error in prepareAndPlay", e);
             handlePlaybackError();
         }
     }
